@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavya Mittal | Backend & AI Engineer</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Background Canvas for Particles -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Floating Code Snippets (Background Elements) -->
+    <div class="code-bg-elements" aria-hidden="true">
+        <div class="code-snippet snippet-1">def process_audio(file):</div>
+        <div class="code-snippet snippet-2">SELECT * FROM analytics</div>
+        <div class="code-snippet snippet-3">app.route('/api/v1/voice')</div>
+        <div class="code-snippet snippet-4">docker-compose up -d</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <a href="#home" class="logo">KM<span class="dot">.</span></a>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero section">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <p class="greeting">Hello World, I am</p>
+                    <h1 class="glitch-text" data-text="Kavya Mittal">
+                        <span class="typing-text"></span><span class="cursor">|</span>
+                    </h1>
+                    <h2 class="subtitle gradient-text">Backend & AI Engineer</h2>
+                    <p class="tagline">Building Production-Grade Systems & AI-Driven Microservices.</p>
+                    
+                    <div class="hero-cta">
+                        <a href="#projects" class="btn btn-primary glow-effect">
+                            View My Work <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary glass-btn">
+                            Get In Touch
+                        </a>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="mailto:kavyamittal1282@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="terminal-window glass-card">
+                        <div class="terminal-header">
+                            <span class="btn-close"></span>
+                            <span class="btn-min"></span>
+                            <span class="btn-max"></span>
+                            <span class="terminal-title">kavya@backend-dev:~</span>
+                        </div>
+                        <div class="terminal-body" id="terminal-typing">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
+                
+                <div class="about-grid">
+                    <div class="about-text glass-card">
+                        <p>I'm a Backend-focused Software Engineer passionate about building scalable, AI-driven microservices and production-grade systems.</p>
+                        <p>With expertise in Python, Java, and LLM integrations, I thrive on taking full ownership of end-to-end AI workflows. From deploying robust REST APIs to optimizing SQL queries for real-time analytics dashboards, I love solving complex technical challenges.</p>
+                        
+                        <div class="education-card mt-4">
+                            <i class="fas fa-graduation-cap edu-icon"></i>
+                            <div>
+                                <h3>Bachelors of Engineering (CSE)</h3>
+                                <p class="highlight">Chitkara University, Punjab</p>
+                                <p class="date">Aug 2022 – Present</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card glass-card hover-glow">
+                            <div class="stat-number neon-blue">11</div>
+                            <div class="stat-label">Months Experience</div>
+                        </div>
+                        <div class="stat-card glass-card hover-glow">
+                            <div class="stat-number neon-purple">9.06</div>
+                            <div class="stat-label">CGPA</div>
+                        </div>
+                        <div class="stat-card glass-card hover-glow">
+                            <div class="stat-number neon-blue">2+</div>
+                            <div class="stat-label">Major AI Products Built</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="section">
+            <div class="container">
+                <h2 class="section-title">My <span class="gradient-text">Experience</span></h2>
+                
+                <div class="timeline">
+                    <!-- Timeline Item -->
+                    <div class="timeline-item reveal">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content glass-card hover-glow">
+                            <div class="timeline-header">
+                                <div>
+                                    <h3 class="role">Software Development Engineer in Test</h3>
+                                    <h4 class="company highlight">Salescode.ai <span class="location"><i class="fas fa-map-marker-alt"></i> Gurugram</span></h4>
+                                </div>
+                                <div class="date-badge">April 2025 – Present</div>
+                            </div>
+
+                            <div class="exp-category mt-4">
+                                <h5 class="category-title neon-blue"><i class="fas fa-server"></i> Backend & AI Engineering</h5>
+                                <ul class="exp-list">
+                                    <li>Built and maintained Python-based microservices powering AI voice and analytics products, achieving sub-2-second response latency.</li>
+                                    <li>Owned end-to-end AI workflows (STT, TTS, conversational AI) integrating AWS, Google, and 11 Labs services with ~90–95% accuracy.</li>
+                                    <li>Designed scalable RESTful APIs and implemented SQL query optimizations for real-time analytics.</li>
+                                    <li>Deployed production services on AWS (EC2, S3) using Docker, Nginx, and Linux handling live issue resolution.</li>
+                                </ul>
+                            </div>
+
+                            <div class="exp-category mt-4">
+                                <h5 class="category-title neon-purple"><i class="fas fa-robot"></i> Automation & Quality Engineering</h5>
+                                <ul class="exp-list">
+                                    <li>Developed UI (Playwright) and mobile (Flutter) automation, eliminating 100% of manual regression effort.</li>
+                                    <li>Built DB validation scripts & API testing frameworks for 500+ data points.</li>
+                                    <li>Integrated with CI/CD pipelines (Jenkins) for fast, repeatable testing.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="container">
+                <h2 class="section-title">Skills & <span class="gradient-text">Tech Stack</span></h2>
+                
+                <div class="skills-grid">
+                    <!-- Category 1 -->
+                    <div class="skill-category glass-card reveal">
+                        <h3><i class="fas fa-code"></i> Languages</h3>
+                        <div class="skill-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Java</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">SQL</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 2 -->
+                    <div class="skill-category glass-card reveal delay-1">
+                        <h3><i class="fas fa-server"></i> Backend</h3>
+                        <div class="skill-tags">
+                            <span class="tag neon-border">Flask</span>
+                            <span class="tag">Spring Boot</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag neon-border">REST APIs</span>
+                            <span class="tag neon-border">Microservices</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 3 -->
+                    <div class="skill-category glass-card reveal delay-2">
+                        <h3><i class="fas fa-database"></i> Databases</h3>
+                        <div class="skill-tags">
+                            <span class="tag neon-border">MySQL</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">Amazon RDS</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div class="skill-category glass-card reveal">
+                        <h3><i class="fas fa-cloud"></i> Cloud & DevOps</h3>
+                        <div class="skill-tags">
+                            <span class="tag neon-border">AWS (EC2, S3)</span>
+                            <span class="tag neon-border">Docker</span>
+                            <span class="tag">Nginx</span>
+                            <span class="tag">CI/CD (Jenkins)</span>
+                            <span class="tag">Linux</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 5 -->
+                    <div class="skill-category glass-card reveal delay-1">
+                        <h3><i class="fas fa-vial"></i> Testing & QA</h3>
+                        <div class="skill-tags">
+                            <span class="tag">Playwright</span>
+                            <span class="tag">Flutter Automation</span>
+                            <span class="tag">API Testing</span>
+                            <span class="tag">Integration Testing</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 6 -->
+                    <div class="skill-category glass-card reveal delay-2">
+                        <h3><i class="fas fa-desktop"></i> Frontend</h3>
+                        <div class="skill-tags">
+                            <span class="tag">React.js</span>
+                            <span class="tag">HTML/CSS</span>
+                            <span class="tag">TailwindCSS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+                
+                <div class="projects-grid">
+                    <!-- Project 1 -->
+                    <div class="project-card glass-card hover-glow outline-blue reveal">
+                        <div class="project-visual ai-waveform">
+                            <!-- Animated via CSS -->
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="ai-icon"><i class="fas fa-microphone-alt"></i></div>
+                        </div>
+                        <div class="project-content">
+                            <h3>SCAI – AI Voice Calling Agent</h3>
+                            <p>Implemented backend APIs, managed AI-driven voice workflows, and maintained real-time conversational pipelines supporting Hindi and Mexican Spanish with ~90-95% accuracy.</p>
+                            <div class="tech-stack">
+                                <span>Python</span>
+                                <span>Flask</span>
+                                <span>AWS</span>
+                                <span>Docker</span>
+                                <span>AI/ML</span>
+                            </div>
+                            <a href="#" class="btn btn-primary glow-effect btn-sm mt-3">View Details <i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card glass-card hover-glow outline-purple reveal delay-1">
+                        <div class="project-visual analytics-chart">
+                            <!-- Animated via CSS -->
+                            <div class="chart-bar h-40"></div>
+                            <div class="chart-bar h-70"></div>
+                            <div class="chart-bar h-50"></div>
+                            <div class="chart-bar h-90"></div>
+                            <div class="chart-bar h-60"></div>
+                            <div class="chart-line"></div>
+                        </div>
+                        <div class="project-content">
+                            <h3>SalesLens – Analytics Dashboard</h3>
+                            <p>Built backend services, optimized complex SQL queries, and developed secure real-time analytics dashboards with detailed role-based access control (RBAC).</p>
+                            <div class="tech-stack">
+                                <span>Python</span>
+                                <span>REST APIs</span>
+                                <span>MySQL</span>
+                                <span>AWS</span>
+                                <span>React</span>
+                            </div>
+                            <a href="#" class="btn btn-primary glow-effect btn-sm mt-3">View Details <i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title">Get In <span class="gradient-text">Touch</span></h2>
+                
+                <div class="contact-grid">
+                    <div class="contact-info glass-card reveal">
+                        <h3>Let's build something amazing together.</h3>
+                        <p class="mb-4">I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+                        
+                        <div class="contact-methods">
+                            <div class="method-item">
+                                <div class="icon-box neon-blue"><i class="fas fa-phone-alt"></i></div>
+                                <div>
+                                    <h4>Phone</h4>
+                                    <p>+91-8875484025</p>
+                                </div>
+                            </div>
+                            <div class="method-item">
+                                <div class="icon-box neon-purple"><i class="fas fa-envelope"></i></div>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p>kavyamittal1282@gmail.com</p>
+                                </div>
+                            </div>
+                            <div class="method-item">
+                                <div class="icon-box neon-blue"><i class="fas fa-map-marker-alt"></i></div>
+                                <div>
+                                    <h4>Location</h4>
+                                    <p>Gurugram, India</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="social-links mt-4">
+                            <a href="#" class="glass-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="#" class="glass-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-container glass-card outline-purple reveal delay-1">
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" class="glass-input" placeholder="John Doe" required>
+                                </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="glass-input" placeholder="john@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" class="glass-input" rows="5" placeholder="Your message here..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary glow-effect w-100">
+                                Send Message <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-footer">
+        <div class="container text-center">
+            <p>&copy; 2024 Kavya Mittal. Designed & Built with <i class="fas fa-heart neon-purple-text"></i></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
