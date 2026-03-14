@@ -214,10 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            const subject = encodeURIComponent(`Portfolio Contact: ${name}`);
+            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+            
+            window.location.href = `mailto:kavyamittal1282@gmail.com?subject=${subject}&body=${body}`;
+            
             const btn = contactForm.querySelector('button');
             const originalText = btn.innerHTML;
             
-            btn.innerHTML = 'Sent Successfully! <i class="fas fa-check"></i>';
+            btn.innerHTML = 'Opening Mail Client... <i class="fas fa-check"></i>';
             btn.style.background = '#27c93f';
             
             contactForm.reset();
