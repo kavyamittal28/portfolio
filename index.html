@@ -14,9 +14,39 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-theme">
+
+    <!-- Boot Sequence Screen -->
+    <div id="boot-screen">
+        <div class="boot-terminal" id="boot-terminal"></div>
+        <div class="boot-progress-bar">
+            <div class="boot-progress-fill" id="boot-progress-fill"></div>
+        </div>
+        <button class="boot-skip-btn" id="boot-skip">Press ESC or click to skip</button>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Interactive AI Assistant -->
+    <div id="ai-assistant" class="ai-assistant">
+        <div class="ai-orb"></div>
+        <div class="ai-ring"></div>
+
+        <!-- Guided Tour Controls (Hidden by default) -->
+        <div class="tour-controls" id="tour-controls">
+            <div class="ai-speech-bubble" id="ai-speech">Hi! I'm Kavya's AI. Click me for a tour!</div>
+            <div class="tour-buttons">
+                <button id="tour-back" class="tour-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="tour-progress" id="tour-progress">1/6</div>
+                <button id="tour-next" class="tour-btn"><i class="fas fa-chevron-right"></i></button>
+                <button id="tour-skip" class="tour-btn skip-btn"><i class="fas fa-times"></i> Skip</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Canvas for Particles -->
     <canvas id="bg-canvas"></canvas>
-    
+
     <!-- Floating Code Snippets (Background Elements) -->
     <div class="code-bg-elements" aria-hidden="true">
         <div class="code-snippet snippet-1">def process_audio(file):</div>
@@ -26,7 +56,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="glass-nav">
+    <nav class="glass-nav content-hidden">
         <div class="nav-container">
             <a href="#home" class="logo">KM<span class="dot">.</span></a>
             <button class="mobile-menu-btn">
@@ -43,7 +73,7 @@
         </div>
     </nav>
 
-    <main>
+    <main class="content-hidden">
         <!-- Hero Section -->
         <section id="home" class="hero section">
             <div class="container hero-content">
@@ -54,7 +84,7 @@
                     </h1>
                     <h2 class="subtitle gradient-text">Backend & AI Engineer</h2>
                     <p class="tagline">Building Production-Grade Systems & AI-Driven Microservices.</p>
-                    
+
                     <div class="hero-cta">
                         <a href="#projects" class="btn btn-primary glow-effect">
                             View My Work <i class="fas fa-arrow-right"></i>
@@ -63,24 +93,30 @@
                             Get In Touch
                         </a>
                     </div>
-                    
+
                     <div class="social-links">
                         <a href="#" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
                         <a href="#" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                         <a href="mailto:kavyamittal1282@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
-                
+
                 <div class="hero-visual">
-                    <div class="terminal-window glass-card">
+                    <div class="terminal-window glass-card interactive-terminal">
                         <div class="terminal-header">
                             <span class="btn-close"></span>
                             <span class="btn-min"></span>
                             <span class="btn-max"></span>
-                            <span class="terminal-title">kavya@backend-dev:~</span>
+                            <span class="terminal-title">kavya@portfolio:~</span>
                         </div>
-                        <div class="terminal-body" id="terminal-typing">
-                            <!-- Populated by JS -->
+                        <div class="terminal-body">
+                            <div class="terminal-output" id="terminal-output" role="log" aria-live="polite">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="terminal-input-line">
+                                <span class="terminal-prompt">visitor@kavya-os:~$</span>
+                                <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal input">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,13 +126,13 @@
         <!-- About Section -->
         <section id="about" class="section">
             <div class="container">
-                <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
-                
+                <h2 class="section-title reveal">About <span class="gradient-text">Me</span></h2>
+
                 <div class="about-grid">
                     <div class="about-text glass-card">
                         <p>I'm a Backend-focused Software Engineer passionate about building scalable, AI-driven microservices and production-grade systems.</p>
                         <p>With expertise in Python, Java, and LLM integrations, I thrive on taking full ownership of end-to-end AI workflows. From deploying robust REST APIs to optimizing SQL queries for real-time analytics dashboards, I love solving complex technical challenges.</p>
-                        
+
                         <div class="education-card mt-4">
                             <i class="fas fa-graduation-cap edu-icon"></i>
                             <div>
@@ -106,18 +142,18 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="stats-grid">
                         <div class="stat-card glass-card hover-glow">
-                            <div class="stat-number neon-blue">11</div>
+                            <div class="stat-number neon-blue" data-target="11">0</div>
                             <div class="stat-label">Months Experience</div>
                         </div>
                         <div class="stat-card glass-card hover-glow">
-                            <div class="stat-number neon-purple">9.06</div>
+                            <div class="stat-number neon-purple" data-target="9.06">0</div>
                             <div class="stat-label">CGPA</div>
                         </div>
                         <div class="stat-card glass-card hover-glow">
-                            <div class="stat-number neon-blue">2+</div>
+                            <div class="stat-number neon-blue" data-target="2" data-suffix="+">0</div>
                             <div class="stat-label">Major AI Products Built</div>
                         </div>
                     </div>
@@ -128,8 +164,8 @@
         <!-- Experience Section -->
         <section id="experience" class="section">
             <div class="container">
-                <h2 class="section-title">My <span class="gradient-text">Experience</span></h2>
-                
+                <h2 class="section-title reveal">My <span class="gradient-text">Experience</span></h2>
+
                 <div class="timeline">
                     <!-- Timeline Item -->
                     <div class="timeline-item reveal">
@@ -170,8 +206,8 @@
         <!-- Skills Section -->
         <section id="skills" class="section">
             <div class="container">
-                <h2 class="section-title">Skills & <span class="gradient-text">Tech Stack</span></h2>
-                
+                <h2 class="section-title reveal">Skills & <span class="gradient-text">Tech Stack</span></h2>
+
                 <div class="skills-grid">
                     <!-- Category 1 -->
                     <div class="skill-category glass-card reveal">
@@ -246,8 +282,8 @@
         <!-- Projects Section -->
         <section id="projects" class="section">
             <div class="container">
-                <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
-                
+                <h2 class="section-title reveal">Featured <span class="gradient-text">Projects</span></h2>
+
                 <div class="projects-grid">
                     <!-- Project 1 -->
                     <div class="project-card glass-card hover-glow outline-blue reveal">
@@ -307,13 +343,13 @@
         <!-- Contact Section -->
         <section id="contact" class="section">
             <div class="container">
-                <h2 class="section-title">Get In <span class="gradient-text">Touch</span></h2>
-                
+                <h2 class="section-title reveal">Get In <span class="gradient-text">Touch</span></h2>
+
                 <div class="contact-grid">
                     <div class="contact-info glass-card reveal">
                         <h3>Let's build something amazing together.</h3>
                         <p class="mb-4">I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
-                        
+
                         <div class="contact-methods">
                             <div class="method-item">
                                 <div class="icon-box neon-blue"><i class="fas fa-phone-alt"></i></div>
@@ -337,19 +373,19 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="social-links-container mt-4" style="margin-bottom: 2rem;">
                             <div class="social-links">
                                 <a href="#" class="glass-icon" aria-label="GitHub"><i class="fab fa-github"></i></a>
                                 <a href="#" class="glass-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                             </div>
                         </div>
-                        
+
                         <a href="KAVYA_MITTAL.pdf" download="Kavya_Mittal_Resume.pdf" class="btn btn-primary glow-effect">
                             <i class="fas fa-file-pdf"></i> Download Resume
                         </a>
                     </div>
-                    
+
                     <div class="contact-form-container glass-card outline-purple reveal delay-1">
                         <form id="contactForm" class="contact-form">
                             <div class="form-group">
@@ -374,11 +410,71 @@
         </section>
     </main>
 
-    <footer class="glass-footer">
+    <footer class="glass-footer content-hidden">
         <div class="container text-center">
             <p>&copy; 2024 Kavya Mittal. Designed & Built with <i class="fas fa-heart neon-purple-text"></i></p>
         </div>
     </footer>
+
+    <!-- Scroll Progress Pipeline -->
+    <div id="scroll-pipeline" class="scroll-pipeline content-hidden">
+        <div class="pipeline-track">
+            <div class="pipeline-stage" data-section="home">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">INIT</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-stage" data-section="about">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">PROFILE</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-stage" data-section="experience">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">EXP</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-stage" data-section="skills">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">SKILLS</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-stage" data-section="projects">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">PROJECTS</span>
+            </div>
+            <div class="pipeline-connector"></div>
+            <div class="pipeline-stage" data-section="contact">
+                <div class="pipeline-node"></div>
+                <span class="pipeline-label">DEPLOY</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Easter Egg: Achievement Toast -->
+    <div id="easter-egg-toast" class="easter-egg-toast">
+        <div class="toast-icon"><i class="fas fa-trophy"></i></div>
+        <div class="toast-content">
+            <div class="toast-title">ACHIEVEMENT UNLOCKED</div>
+            <div class="toast-msg">You found the secret! Kavya appreciates your curiosity.</div>
+        </div>
+    </div>
+
+    <!-- Easter Egg: Debug Panel -->
+    <div id="debug-panel" class="debug-panel glass-card">
+        <button class="debug-close" id="debug-close"><i class="fas fa-times"></i></button>
+        <h3 class="neon-blue"><i class="fas fa-bug"></i> Debug Mode</h3>
+        <div class="debug-info">
+            <div class="debug-row"><span class="debug-key">Framework:</span><span class="debug-val">None (Vanilla JS)</span></div>
+            <div class="debug-row"><span class="debug-key">Markup:</span><span class="debug-val">HTML5</span></div>
+            <div class="debug-row"><span class="debug-key">Styling:</span><span class="debug-val">CSS3 + Custom Properties</span></div>
+            <div class="debug-row"><span class="debug-key">Animations:</span><span class="debug-val">Canvas + CSS Keyframes</span></div>
+            <div class="debug-row"><span class="debug-key">Fonts:</span><span class="debug-val">Space Grotesk, Inter</span></div>
+            <div class="debug-row"><span class="debug-key">Theme:</span><span class="debug-val">Glassmorphism + Neon Dark</span></div>
+            <div class="debug-row"><span class="debug-key">Icons:</span><span class="debug-val">FontAwesome 6</span></div>
+            <div class="debug-row"><span class="debug-key">Easter Eggs:</span><span class="debug-val" id="eggs-found">0/3</span></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
