@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Sub-2s AI Voice Pipelines | Kavya Mittal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="blog.css">
+</head>
+<body class="dark-theme">
+    <div id="page-transition-overlay" class="page-transition-overlay active">
+        <span class="transition-text">LOADING MODULE...</span>
+    </div>
+    <div id="custom-cursor"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">KM<span class="dot">.</span></a>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            <a href="index.html#blog" class="btn btn-secondary glass-btn" style="padding:0.5rem 1.2rem; font-size:0.8rem;">
+                <i class="fas fa-arrow-left"></i> Back to Blog
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <article class="blog-article">
+            <header class="blog-article-header">
+                <span class="blog-category-tag">Backend</span>
+                <h1 class="blog-article-title reveal">Building Sub-2s AI Voice Pipelines with Flask</h1>
+                <div class="blog-meta">
+                    <span><i class="far fa-calendar-alt"></i> March 2026</span>
+                    <span><i class="far fa-clock"></i> 5 min read</span>
+                    <span><i class="far fa-user"></i> Kavya Mittal</span>
+                </div>
+            </header>
+
+            <div class="blog-body glass-card reveal">
+                <p>When I joined Salescode.ai, one of my first challenges was building a real-time voice calling agent that could hold natural conversations in multiple languages. The target? Sub-2-second end-to-end latency. Here's how we achieved it.</p>
+
+                <h2>The Challenge</h2>
+                <p>Voice AI pipelines involve multiple sequential steps: capturing audio, converting speech to text (STT), processing the intent, generating a response, and converting it back to speech (TTS). Each step adds latency, and users expect near-instant responses in a conversation.</p>
+                <p>Our requirements were demanding:</p>
+                <ul>
+                    <li>Support Hindi and Mexican Spanish with 90%+ accuracy</li>
+                    <li>End-to-end latency under 2 seconds</li>
+                    <li>Handle concurrent calls without degradation</li>
+                    <li>Graceful fallback when AI confidence is low</li>
+                </ul>
+
+                <h2>Architecture Decisions</h2>
+                <p>We chose Flask for our microservices because of its lightweight nature and Python's rich ecosystem for AI/ML integrations. The key architectural decision was using an async pipeline with streaming wherever possible.</p>
+
+<pre><code>@app.route('/api/v1/voice/process', methods=['POST'])
+def process_voice():
+    audio_stream = request.files['audio']
+
+    # Stream STT - don't wait for full transcription
+    transcript = stt_service.stream_transcribe(
+        audio_stream,
+        language=request.args.get('lang', 'en')
+    )
+
+    # Generate response while still transcribing
+    response = ai_engine.generate_response(
+        partial_transcript=transcript,
+        context=session.get('context', {})
+    )
+
+    # Stream TTS back to client
+    audio_response = tts_service.synthesize(
+        text=response.text,
+        voice=response.voice_profile
+    )
+
+    return send_file(audio_response, mimetype='audio/wav')</code></pre>
+
+                <h2>Optimization Strategies</h2>
+                <p>The biggest wins came from three key optimizations:</p>
+
+                <h3>1. Streaming STT</h3>
+                <p>Instead of waiting for the complete audio to finish before starting transcription, we streamed audio chunks to the STT service. This alone saved 300-500ms on average.</p>
+
+                <h3>2. Response Pre-computation</h3>
+                <p>We started generating AI responses as soon as we had 80% confidence in the transcription, rather than waiting for the final result. If the transcription changed significantly, we'd regenerate — but in 90% of cases, the early prediction was accurate enough.</p>
+
+                <h3>3. Connection Pooling</h3>
+                <p>External API calls (AWS Transcribe, 11 Labs TTS) were the biggest bottleneck. We implemented connection pooling and keep-alive connections, reducing the overhead of each API call from ~200ms to ~50ms.</p>
+
+<pre><code># Connection pool for external services
+from urllib3 import PoolManager
+
+pool = PoolManager(
+    num_pools=10,
+    maxsize=20,
+    retries=3,
+    timeout=Timeout(connect=1.0, read=3.0)
+)
+
+# Reuse connections across requests
+tts_client = TTSClient(http_pool=pool)
+stt_client = STTClient(http_pool=pool)</code></pre>
+
+                <h2>Results</h2>
+                <p>After these optimizations, our pipeline consistently delivered:</p>
+                <ul>
+                    <li><strong>Average latency:</strong> 1.4 seconds (down from 3.2s)</li>
+                    <li><strong>P95 latency:</strong> 1.8 seconds</li>
+                    <li><strong>Accuracy:</strong> 90-95% across Hindi and Mexican Spanish</li>
+                    <li><strong>Concurrent calls:</strong> 50+ without degradation</li>
+                </ul>
+
+                <h2>Key Takeaways</h2>
+                <p>Building real-time AI systems taught me that the biggest performance gains come from architectural decisions, not micro-optimizations. Streaming, early prediction, and connection reuse were far more impactful than tweaking individual function performance.</p>
+                <p>If you're building similar systems, start by profiling your entire pipeline end-to-end. The bottleneck is almost never where you think it is.</p>
+
+                <div class="blog-author-box">
+                    <div class="author-info">
+                        <strong>Kavya Mittal</strong>
+                        <span>Backend & AI Engineer at Salescode.ai</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <div class="blog-nav-bottom">
+            <a href="index.html#blog" class="btn btn-primary glow-effect">
+                <i class="fas fa-arrow-left"></i> Back to All Posts
+            </a>
+        </div>
+    </main>
+
+    <footer class="glass-footer">
+        <div class="container text-center">
+            <p>&copy; 2024 Kavya Mittal. Designed & Built with <i class="fas fa-heart neon-purple-text"></i></p>
+        </div>
+    </footer>
+
+    <script src="shared.js"></script>
+</body>
+</html>

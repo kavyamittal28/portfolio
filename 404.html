@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Route Not Found | KavyaOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .glitch-404 {
+            font-size: 10rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--text-main);
+            text-shadow: 0 0 20px var(--accent-blue-dim);
+            animation: glitch-anim 3s infinite;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes glitch-anim {
+            0%, 90%, 100% { text-shadow: 0 0 20px var(--accent-blue-dim); transform: none; }
+            91% { text-shadow: -3px 0 var(--accent-blue), 3px 0 var(--accent-purple); transform: skewX(-2deg); }
+            93% { text-shadow: 3px 0 var(--accent-purple), -3px 0 var(--accent-blue); transform: skewX(2deg); }
+            95% { text-shadow: -2px 0 var(--accent-blue), 2px 0 var(--accent-purple); transform: none; }
+        }
+
+        .error-terminal {
+            max-width: 500px;
+            width: 100%;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .error-terminal .terminal-body {
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .ascii-robot {
+            color: var(--accent-purple);
+            font-size: 0.85rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .error-msg {
+            color: #ff5f56;
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-hint {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-input-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-input-line .terminal-prompt {
+            color: #27c93f;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .error-input-line input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--accent-blue);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            width: 100%;
+            caret-color: var(--accent-blue);
+        }
+
+        .error-result {
+            margin-top: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .error-cta {
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .glitch-404 {
+                font-size: 6rem;
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="error-page">
+        <div class="glitch-404">404</div>
+
+        <div class="error-terminal glass-card">
+            <div class="terminal-header">
+                <span class="btn-close"></span>
+                <span class="btn-min"></span>
+                <span class="btn-max"></span>
+                <span class="terminal-title">kavya@portfolio:~</span>
+            </div>
+            <div class="terminal-body">
+<pre class="ascii-robot">    ___
+   |o_o|
+   |:_/|
+  //   \ \
+ (|     | )
+/'\_   _/`\
+\___)=(___/</pre>
+                <p class="error-msg">ERROR 404: Route not found</p>
+                <p class="error-hint">The module you're looking for doesn't exist in this build.</p>
+                <div class="error-input-line">
+                    <span class="terminal-prompt">visitor@kavya-os:~$</span>
+                    <input type="text" id="error-input" placeholder="try: cd /home" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="error-result" id="error-result"></div>
+            </div>
+        </div>
+
+        <div class="error-cta">
+            <a href="index.html" class="btn btn-primary glow-effect">
+                <i class="fas fa-home"></i> Return to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Minimal particle background
+        const canvas = document.getElementById('bg-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let w, h, dots = [];
+            function init() {
+                w = canvas.width = innerWidth;
+                h = canvas.height = innerHeight;
+                dots = [];
+                for (let i = 0; i < 40; i++) {
+                    dots.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*2+1, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, c: Math.random()>0.5 ? 'rgba(0,240,255,0.12)' : 'rgba(157,0,255,0.12)' });
+                }
+            }
+            function draw() {
+                ctx.clearRect(0,0,w,h);
+                dots.forEach(d => {
+                    d.x += d.vx; d.y += d.vy;
+                    if (d.x<0||d.x>w) d.vx=-d.vx;
+                    if (d.y<0||d.y>h) d.vy=-d.vy;
+                    ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fillStyle=d.c; ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            init(); draw();
+            addEventListener('resize', init);
+        }
+
+        // Terminal interaction
+        const input = document.getElementById('error-input');
+        const result = document.getElementById('error-result');
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const val = input.value.trim().toLowerCase();
+                    if (val === 'cd /home' || val === 'cd ~' || val === 'cd home' || val === 'cd /') {
+                        result.innerHTML = '<span style="color:#27c93f">Redirecting to home...</span>';
+                        setTimeout(() => window.location.href = 'index.html', 500);
+                    } else if (val === 'help') {
+                        result.innerHTML = '<span style="color:var(--accent-blue)">Available: cd /home, ls, whoami</span>';
+                    } else if (val === 'ls') {
+                        result.innerHTML = '<span style="color:var(--text-muted)">index.html  style.css  script.js  404.html</span>';
+                    } else if (val === 'whoami') {
+                        result.innerHTML = '<span style="color:var(--text-muted)">lost-visitor@kavya-os</span>';
+                    } else {
+                        result.innerHTML = '<span style="color:#ff5f56">Command not found. Try: cd /home</span>';
+                    }
+                    input.value = '';
+                }
+            });
+            input.focus();
+        }
+    </script>
+</body>
+</html>

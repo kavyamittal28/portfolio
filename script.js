@@ -860,7 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pipeline = document.getElementById('scroll-pipeline');
     const pipelineStages = document.querySelectorAll('.pipeline-stage');
     const pipelineConnectors = document.querySelectorAll('.pipeline-connector');
-    const sectionOrder = ['home', 'about', 'experience', 'skills', 'projects', 'contact'];
+    const sectionOrder = ['home', 'about', 'experience', 'certifications', 'skills', 'architecture', 'projects', 'blog', 'contact'];
 
     function updatePipeline() {
         let currentSectionId = 'home';
@@ -1102,5 +1102,116 @@ document.addEventListener('DOMContentLoaded', () => {
             debugPanel.classList.remove('visible');
         });
     }
+
+    /* ==========================================================================
+       17. Dark/Light Theme Toggle
+       ========================================================================== */
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    if (themeToggle && themeIcon) {
+        const savedTheme = localStorage.getItem('kavya-theme') || 'dark';
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(savedTheme + '-theme');
+        themeIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-theme');
+            document.body.classList.remove('dark-theme', 'light-theme');
+            if (isDark) {
+                document.body.classList.add('light-theme');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('kavya-theme', 'light');
+            } else {
+                document.body.classList.add('dark-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('kavya-theme', 'dark');
+            }
+            // Update particle colors
+            if (particles) {
+                const isLight = document.body.classList.contains('light-theme');
+                particles.forEach(p => {
+                    p.color = Math.random() > 0.5
+                        ? (isLight ? 'rgba(0, 144, 170, 0.15)' : 'rgba(0, 240, 255, 0.15)')
+                        : (isLight ? 'rgba(123, 0, 204, 0.15)' : 'rgba(157, 0, 255, 0.15)');
+                });
+            }
+        });
+    }
+
+    /* ==========================================================================
+       18. Certification Stamp Animation
+       ========================================================================== */
+    const certCards = document.querySelectorAll('.cert-card[data-stamp]');
+    const certObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const cards = document.querySelectorAll('.cert-card[data-stamp]');
+                cards.forEach((card, i) => {
+                    setTimeout(() => card.classList.add('stamped'), i * 200);
+                });
+                certObserver.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+    certCards.forEach(c => certObserver.observe(c));
+
+    /* ==========================================================================
+       19. Architecture Diagram Tooltips
+       ========================================================================== */
+    const archTooltip = document.getElementById('arch-tooltip');
+    const archNodes = document.querySelectorAll('.arch-node[data-tooltip]');
+
+    archNodes.forEach(node => {
+        node.addEventListener('mouseenter', (e) => {
+            if (!archTooltip) return;
+            archTooltip.textContent = node.getAttribute('data-tooltip');
+            const rect = node.getBoundingClientRect();
+            const containerRect = node.closest('.sys-arch-diagram').getBoundingClientRect();
+            archTooltip.style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
+            archTooltip.style.top = (rect.top - containerRect.top - 10) + 'px';
+            archTooltip.style.transform = 'translate(-50%, -100%)';
+            archTooltip.classList.add('visible');
+        });
+        node.addEventListener('mouseleave', () => {
+            if (archTooltip) archTooltip.classList.remove('visible');
+        });
+    });
+
+    /* ==========================================================================
+       20. Page Transition Effect
+       ========================================================================== */
+    const transitionOverlay = document.getElementById('page-transition-overlay');
+
+    // Intercept internal page links
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href]');
+        if (!link) return;
+
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') ||
+            href.startsWith('http') || link.hasAttribute('download') ||
+            href === '#') return;
+
+        // Only intercept .html links
+        if (!href.endsWith('.html')) return;
+
+        e.preventDefault();
+        if (transitionOverlay) {
+            transitionOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = href;
+            }, 400);
+        } else {
+            window.location.href = href;
+        }
+    });
+
+    // Fade out overlay on page load
+    window.addEventListener('load', () => {
+        if (transitionOverlay && transitionOverlay.classList.contains('active')) {
+            setTimeout(() => transitionOverlay.classList.remove('active'), 200);
+        }
+    });
 
 });
