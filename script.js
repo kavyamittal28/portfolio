@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('booting');
 
         const bootLines = [
-            { text: 'KAVYA_OS v2.0', type: 'header', delay: 100 },
+            { text: 'KAVYA_OS v1.0', type: 'header', delay: 100 },
             { text: 'Initializing system...', type: 'system', delay: 400 },
             { text: '<span class="ok">[OK]</span> Loading profile modules', type: 'success', delay: 700 },
             { text: '<span class="ok">[OK]</span> Connecting AWS services', type: 'success', delay: 1000 },
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 |_|\\_\\|_|  |_|
 </div>
 <div class="term-table" style="font-size:0.75rem">
-<span class="term-key">OS</span><span class="term-val">KavyaOS v2.0</span>
+<span class="term-key">OS</span><span class="term-val">KavyaOS v1.0</span>
 <span class="term-key">Host</span><span class="term-val">kavya@portfolio</span>
 <span class="term-key">Shell</span><span class="term-val">bash 5.1</span>
 <span class="term-key">Languages</span><span class="term-val">Python, Java, JS, SQL</span>
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Welcome message after boot
     bootPromise.then(() => {
         setTimeout(() => {
-            addTerminalOutput(`<div class="term-special">Welcome to KavyaOS v2.0</div>`);
+            addTerminalOutput(`<div class="term-special">Welcome to KavyaOS v1.0</div>`);
             addTerminalOutput(`<div class="term-output" style="color:var(--text-muted)">Type <strong style="color:var(--accent-blue)">help</strong> to see available commands.</div>`);
         }, 800);
     });
@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function registerEgg(name) {
         eggsFound.add(name);
         const el = document.getElementById('eggs-found');
-        if (el) el.textContent = `${eggsFound.size}/3`;
+        if (el) el.textContent = `${eggsFound.size}/4`;
     }
 
     // --- 16a. Konami Code ---
@@ -1213,5 +1213,1445 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => transitionOverlay.classList.remove('active'), 200);
         }
     });
+
+    /* ==========================================================================
+       21. Hero Parallax Depth Layers
+       ========================================================================== */
+    const heroSection = document.getElementById('home');
+    const parallaxLayers = document.querySelectorAll('.parallax-layer');
+    const bgCanvas = document.getElementById('bg-canvas');
+
+    if (heroSection && parallaxLayers.length && window.matchMedia('(pointer: fine)').matches) {
+        let parallaxRAF = null;
+        let mouseX = 0, mouseY = 0;
+
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            // Normalized -1 to 1 from center of hero
+            mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+            if (!parallaxRAF) {
+                parallaxRAF = requestAnimationFrame(() => {
+                    parallaxLayers.forEach(layer => {
+                        const depth = parseFloat(layer.dataset.depth) || 0;
+                        const moveX = mouseX * depth * 20;
+                        const moveY = mouseY * depth * 15;
+                        layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    });
+                    // Particles layer moves slowest
+                    if (bgCanvas) {
+                        const moveX = mouseX * 0.1 * 20;
+                        const moveY = mouseY * 0.1 * 15;
+                        bgCanvas.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    }
+                    parallaxRAF = null;
+                });
+            }
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            parallaxLayers.forEach(layer => {
+                layer.style.transform = 'translate(0px, 0px)';
+            });
+            if (bgCanvas) bgCanvas.style.transform = 'translate(0px, 0px)';
+        });
+
+        // Scroll-based vertical parallax
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroHeight = heroSection.offsetHeight;
+            if (scrollY < heroHeight) {
+                parallaxLayers.forEach(layer => {
+                    const depth = parseFloat(layer.dataset.depth) || 0;
+                    const offsetY = scrollY * depth * 0.3;
+                    layer.style.transform = `translateY(${offsetY}px)`;
+                });
+                if (bgCanvas) {
+                    bgCanvas.style.transform = `translateY(${scrollY * 0.1 * 0.3}px)`;
+                }
+            }
+        });
+    }
+
+    /* ==========================================================================
+       22. Keyboard Shortcuts System + Cheat Sheet
+       ========================================================================== */
+    const shortcutsModal = document.getElementById('shortcuts-modal');
+    const shortcutsClose = document.getElementById('shortcuts-close');
+
+    function toggleShortcuts(show) {
+        if (!shortcutsModal) return;
+        if (show === undefined) show = !shortcutsModal.classList.contains('visible');
+        shortcutsModal.classList.toggle('visible', show);
+    }
+
+    if (shortcutsClose) {
+        shortcutsClose.addEventListener('click', () => toggleShortcuts(false));
+    }
+    if (shortcutsModal) {
+        shortcutsModal.addEventListener('click', (e) => {
+            if (e.target === shortcutsModal) toggleShortcuts(false);
+        });
+    }
+
+    // Vim-style double-key navigation
+    const sectionMap = {
+        'h': 'home', 'a': 'about', 'e': 'experience',
+        's': 'skills', 'p': 'projects', 'b': 'blog', 'c': 'contact'
+    };
+
+    let pendingKey = null;
+    let pendingTimer = null;
+
+    document.addEventListener('keydown', (e) => {
+        // Ignore when typing in inputs
+        const tag = document.activeElement.tagName.toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+            // Only allow Escape in inputs
+            if (e.key === 'Escape') {
+                document.activeElement.blur();
+                toggleShortcuts(false);
+            }
+            return;
+        }
+
+        // Escape closes any overlay
+        if (e.key === 'Escape') {
+            toggleShortcuts(false);
+            return;
+        }
+
+        // ? opens cheat sheet
+        if (e.key === '?') {
+            e.preventDefault();
+            toggleShortcuts();
+            return;
+        }
+
+        // t toggles theme
+        if (e.key === 't' && !e.ctrlKey && !e.metaKey) {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) themeToggle.click();
+            return;
+        }
+
+        // / focuses terminal
+        if (e.key === '/') {
+            e.preventDefault();
+            const termInput = document.getElementById('terminal-input');
+            if (termInput) {
+                termInput.focus();
+                termInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        // Vim-style g + key navigation
+        if (e.key === 'g' && !pendingKey) {
+            pendingKey = 'g';
+            clearTimeout(pendingTimer);
+            pendingTimer = setTimeout(() => { pendingKey = null; }, 500);
+            return;
+        }
+
+        if (pendingKey === 'g' && sectionMap[e.key]) {
+            pendingKey = null;
+            clearTimeout(pendingTimer);
+            const target = document.getElementById(sectionMap[e.key]);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+
+        // Reset pending if unrecognized
+        pendingKey = null;
+    });
+
+    /* ==========================================================================
+       23. Ambient Sound Engine (Web Audio API)
+       ========================================================================== */
+    const SoundEngine = (() => {
+        let ctx = null;
+        let enabled = false;
+        let initialized = false;
+        const soundToggle = document.getElementById('sound-toggle');
+        const soundIcon = document.getElementById('sound-icon');
+
+        function init() {
+            if (initialized) return;
+            try {
+                ctx = new (window.AudioContext || window.webkitAudioContext)();
+                initialized = true;
+            } catch (e) { return; }
+        }
+
+        function playTone(freq, duration, vol, type) {
+            if (!enabled || !ctx) return;
+            if (ctx.state === 'suspended') ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(vol || 0.06, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (duration || 0.08));
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + (duration || 0.08));
+        }
+
+        function hover() { playTone(1200, 0.04, 0.03, 'sine'); }
+        function click() { playTone(800, 0.06, 0.06, 'square'); }
+        function keypress() { playTone(900 + Math.random() * 300, 0.025, 0.04, 'square'); }
+        function enter() { playTone(400, 0.1, 0.08, 'triangle'); }
+        function success() {
+            playTone(523, 0.1, 0.07, 'sine');
+            setTimeout(() => playTone(659, 0.1, 0.07, 'sine'), 100);
+            setTimeout(() => playTone(784, 0.15, 0.07, 'sine'), 200);
+        }
+        function boot(index) {
+            playTone(200 + index * 80, 0.05, 0.04, 'square');
+        }
+        function error() { playTone(200, 0.15, 0.06, 'sawtooth'); }
+
+        function toggle() {
+            init();
+            enabled = !enabled;
+            localStorage.setItem('kavya-sound', enabled ? 'on' : 'off');
+            if (soundIcon) {
+                soundIcon.className = enabled ? 'fas fa-volume-high' : 'fas fa-volume-xmark';
+            }
+            if (soundToggle) soundToggle.classList.toggle('active', enabled);
+            if (enabled) success();
+        }
+
+        // Restore preference
+        const pref = localStorage.getItem('kavya-sound');
+        if (pref === 'on') {
+            init();
+            enabled = true;
+            if (soundIcon) soundIcon.className = 'fas fa-volume-high';
+            if (soundToggle) soundToggle.classList.add('active');
+        }
+
+        if (soundToggle) soundToggle.addEventListener('click', toggle);
+
+        // Attach hover sounds to interactive elements
+        document.querySelectorAll('a, button, .btn, .tag, .glass-icon, .nav-links a').forEach(el => {
+            el.addEventListener('mouseenter', hover);
+        });
+
+        // Terminal keypress sounds
+        const terminalInput = document.getElementById('terminal-input');
+        if (terminalInput) {
+            terminalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') enter();
+                else if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt' && e.key !== 'Meta')
+                    keypress();
+            });
+        }
+
+        return { hover, click, keypress, enter, success, boot, error, toggle,
+            get enabled() { return enabled; }
+        };
+    })();
+
+    // Expose for use in terminal commands
+    window.SoundEngine = SoundEngine;
+
+    /* ==========================================================================
+       24. Visitor Hacker Profile Progression System
+       ========================================================================== */
+    const VisitorProfile = (() => {
+        const STORAGE_KEY = 'kavya-visitor-profile';
+        const defaults = {
+            sectionsVisited: [], commandsUsed: [], eggsFound: [],
+            totalVisits: 0, resumeDownloaded: false,
+            blogRead: false, projectsViewed: [], themeToggled: false
+        };
+
+        function load() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? { ...defaults, ...JSON.parse(raw) } : { ...defaults };
+            } catch { return { ...defaults }; }
+        }
+
+        function save(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        const data = load();
+        data.totalVisits++;
+        save(data);
+
+        function track(category, value) {
+            if (Array.isArray(data[category])) {
+                if (!data[category].includes(value)) {
+                    data[category].push(value);
+                    save(data);
+                }
+            } else {
+                data[category] = value;
+                save(data);
+            }
+        }
+
+        function getScore() {
+            return data.sectionsVisited.length +
+                   data.commandsUsed.length * 2 +
+                   data.eggsFound.length * 5 +
+                   data.projectsViewed.length * 2 +
+                   (data.resumeDownloaded ? 3 : 0) +
+                   (data.blogRead ? 2 : 0) +
+                   (data.themeToggled ? 1 : 0) +
+                   Math.min(data.totalVisits, 5);
+        }
+
+        function getRank() {
+            const score = getScore();
+            if (score >= 51) return { title: 'System Architect', color: '#ffd700' };
+            if (score >= 36) return { title: 'Senior Engineer', color: '#00f0ff' };
+            if (score >= 21) return { title: 'Junior Dev', color: '#9d00ff' };
+            if (score >= 11) return { title: 'Script Kiddie', color: '#00ff88' };
+            return { title: 'Guest', color: '#a0a0b0' };
+        }
+
+        function getAsciiCard() {
+            const rank = getRank();
+            const score = getScore();
+            const maxScore = 55;
+            const barLen = 20;
+            const filled = Math.round((score / maxScore) * barLen);
+            const bar = '\u2588'.repeat(filled) + '\u2591'.repeat(barLen - filled);
+            const achievements = [
+                data.sectionsVisited.length >= 7 ? '\u2713' : '\u2717', 'All Sections',
+                data.commandsUsed.length >= 5 ? '\u2713' : '\u2717', '5+ Commands',
+                data.eggsFound.length >= 4 ? '\u2713' : '\u2717', 'All Easter Eggs',
+                data.resumeDownloaded ? '\u2713' : '\u2717', 'Resume Downloaded',
+                data.projectsViewed.length >= 2 ? '\u2713' : '\u2717', 'All Projects Viewed',
+                data.totalVisits >= 3 ? '\u2713' : '\u2717', 'Return Visitor'
+            ];
+            let achieveStr = '';
+            for (let i = 0; i < achievements.length; i += 2) {
+                const icon = achievements[i] === '\u2713'
+                    ? `<span style="color:#00ff88">${achievements[i]}</span>`
+                    : `<span style="color:#ff4444">${achievements[i]}</span>`;
+                achieveStr += `  ${icon} ${achievements[i+1]}\n`;
+            }
+            const completedCount = achievements.filter((v, i) => i % 2 === 0 && v === '\u2713').length;
+            return `<div style="color:${rank.color}; font-weight:600;">
+\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510
+\u2502  VISITOR PROFILE CARD        \u2502
+\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</div>
+<div class="term-table" style="font-size:0.8rem;">
+<span class="term-key">Rank</span><span class="term-val" style="color:${rank.color};font-weight:600">${rank.title}</span>
+<span class="term-key">Score</span><span class="term-val">${score}/${maxScore}</span>
+<span class="term-key">Progress</span><span class="term-val" style="color:${rank.color}">${bar}</span>
+<span class="term-key">Visits</span><span class="term-val">${data.totalVisits}</span>
+<span class="term-key">Sections</span><span class="term-val">${data.sectionsVisited.length}/7</span>
+<span class="term-key">Commands</span><span class="term-val">${data.commandsUsed.length}</span>
+<span class="term-key">Eggs</span><span class="term-val">${data.eggsFound.length}/4</span>
+</div>
+<div class="term-heading" style="margin-top:0.5rem">Achievements (${completedCount}/6)</div>
+<pre style="font-size:0.75rem; line-height:1.6; margin:0;">${achieveStr}</pre>`;
+        }
+
+        // Track sections via scroll
+        let lastTrackedSection = '';
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section[id]');
+            sections.forEach(section => {
+                if (scrollY >= section.offsetTop - 400) {
+                    const id = section.getAttribute('id');
+                    if (id && id !== lastTrackedSection) {
+                        lastTrackedSection = id;
+                        track('sectionsVisited', id);
+                    }
+                }
+            });
+        });
+
+        // Track theme toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => track('themeToggled', true));
+        }
+
+        return { track, getScore, getRank, getAsciiCard, data };
+    })();
+
+    window.VisitorProfile = VisitorProfile;
+
+    // Add 'profile' command to terminal
+    commands.profile = () => {
+        return VisitorProfile.getAsciiCard();
+    };
+
+    // Add profile info to help output
+    const origHelp = commands.help;
+    commands.help = () => {
+        return origHelp() + `<span class="term-key">profile</span><span class="term-val">View your hacker profile</span>`;
+    };
+
+    // Track command usage by wrapping terminal input handler
+    const termInput2 = document.getElementById('terminal-input');
+    if (termInput2) {
+        termInput2.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput2.value.trim().split(' ')[0].toLowerCase();
+                if (cmd) VisitorProfile.track('commandsUsed', cmd);
+            }
+        }, true);
+    }
+
+    // Track resume download
+    const origResume = commands.resume;
+    commands.resume = () => {
+        VisitorProfile.track('resumeDownloaded', true);
+        return origResume();
+    };
+
+    // Track easter eggs by wrapping eggsFound.add
+    const origEggAdd = eggsFound.add.bind(eggsFound);
+    eggsFound.add = function(name) {
+        VisitorProfile.track('eggsFound', name);
+        return origEggAdd(name);
+    };
+
+    /* ==========================================================================
+       25. Dynamic Geolocation Greeting
+       ========================================================================== */
+    const GeoGreeting = (() => {
+        const CACHE_KEY = 'kavya-visitor-geo';
+        const KAVYA_LAT = 28.4595, KAVYA_LON = 77.0266; // Gurugram
+
+        function haversine(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        let geoData = null;
+
+        // Try cached first
+        try {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) geoData = JSON.parse(cached);
+        } catch {}
+
+        function fetchGeo() {
+            if (geoData) return Promise.resolve(geoData);
+            return fetch('https://ipapi.co/json/')
+                .then(r => r.json())
+                .then(data => {
+                    geoData = { city: data.city, country: data.country_name, lat: data.latitude, lon: data.longitude };
+                    sessionStorage.setItem(CACHE_KEY, JSON.stringify(geoData));
+                    updateGreeting();
+                    return geoData;
+                })
+                .catch(() => null);
+        }
+
+        function updateGreeting() {
+            if (!geoData || !geoData.city) return;
+            // Update tour's first step if not already started
+            if (tourSteps && tourSteps[0]) {
+                tourSteps[0].text = `Welcome, visitor from ${geoData.city}! I'm Kavya's AI. Let's explore!`;
+            }
+            // Update the AI speech if tour hasn't started
+            if (speech && !tourActive) {
+                speech.innerHTML = `Hi! I'm Kavya's AI. Click me for a tour!`;
+            }
+        }
+
+        // Fetch on load
+        fetchGeo();
+
+        // Ping command for terminal
+        commands.ping = () => {
+            if (!geoData || !geoData.lat) {
+                return `<div class="term-output">PING kavya.dev (${KAVYA_LAT.toFixed(2)}N, ${KAVYA_LON.toFixed(2)}E)</div>
+<div class="term-output" style="color:var(--text-muted)">Location unavailable. Try again later.</div>`;
+            }
+            const dist = haversine(geoData.lat, geoData.lon, KAVYA_LAT, KAVYA_LON);
+            const fakePing = Math.max(1, Math.round(dist * 0.015 + Math.random() * 5));
+            return `<div class="term-heading">PING kavya.dev</div>
+<div class="term-output">From: ${geoData.city}, ${geoData.country} (${geoData.lat.toFixed(2)}, ${geoData.lon.toFixed(2)})</div>
+<div class="term-output">To: Gurugram, India (${KAVYA_LAT.toFixed(2)}, ${KAVYA_LON.toFixed(2)})</div>
+<div class="term-output" style="margin-top:0.3rem">Distance: <strong style="color:var(--accent-blue)">${Math.round(dist).toLocaleString()} km</strong></div>
+<div class="term-output">64 bytes: icmp_seq=1 ttl=64 time=<strong style="color:var(--accent-purple)">${fakePing}ms</strong></div>
+<div class="term-output">64 bytes: icmp_seq=2 ttl=64 time=<strong style="color:var(--accent-purple)">${fakePing + Math.round(Math.random() * 3)}ms</strong></div>
+<div class="term-output">64 bytes: icmp_seq=3 ttl=64 time=<strong style="color:var(--accent-purple)">${fakePing + Math.round(Math.random() * 3)}ms</strong></div>
+<div class="term-success" style="margin-top:0.3rem">--- kavya.dev ping statistics ---</div>
+<div class="term-output">3 packets transmitted, 3 received, 0% packet loss</div>`;
+        };
+
+        return { fetchGeo, haversine, getData: () => geoData, KAVYA_LAT, KAVYA_LON };
+    })();
+
+    window.GeoGreeting = GeoGreeting;
+
+    /* ==========================================================================
+       26. Command Palette (Ctrl+K / Cmd+K)
+       ========================================================================== */
+    const cmdPalette = document.getElementById('command-palette');
+    const cmdInput = document.getElementById('cmd-palette-input');
+    const cmdResults = document.getElementById('cmd-palette-results');
+
+    if (cmdPalette && cmdInput && cmdResults) {
+        const paletteItems = [
+            { label: 'Go to Home', icon: 'fa-house', category: 'Navigation', action: () => document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to About', icon: 'fa-user', category: 'Navigation', action: () => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to Experience', icon: 'fa-briefcase', category: 'Navigation', action: () => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to Skills', icon: 'fa-code', category: 'Navigation', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to Projects', icon: 'fa-diagram-project', category: 'Navigation', action: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to Blog', icon: 'fa-pen-nib', category: 'Navigation', action: () => document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Go to Contact', icon: 'fa-envelope', category: 'Navigation', action: () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Toggle Theme', icon: 'fa-circle-half-stroke', category: 'Action', action: () => document.getElementById('theme-toggle')?.click() },
+            { label: 'Toggle Sound', icon: 'fa-volume-high', category: 'Action', action: () => document.getElementById('sound-toggle')?.click() },
+            { label: 'Download Resume', icon: 'fa-download', category: 'Action', action: () => { commands.resume(); } },
+            { label: 'Focus Terminal', icon: 'fa-terminal', category: 'Action', action: () => { const t = document.getElementById('terminal-input'); if (t) { t.focus(); t.scrollIntoView({ behavior: 'smooth', block: 'center' }); } } },
+            { label: 'Start Tour', icon: 'fa-compass', category: 'Action', action: () => { if (!tourActive) startTour(); } },
+            { label: 'View Hacker Profile', icon: 'fa-id-card', category: 'Terminal', action: () => { const t = document.getElementById('terminal-input'); if (t) { t.value = 'profile'; t.focus(); t.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' })); } } },
+            { label: 'Keyboard Shortcuts', icon: 'fa-keyboard', category: 'Action', action: () => toggleShortcuts(true) },
+            { label: 'Python', icon: 'fa-code', category: 'Skill', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Flask', icon: 'fa-code', category: 'Skill', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'AWS', icon: 'fa-cloud', category: 'Skill', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'Docker', icon: 'fa-cube', category: 'Skill', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'React', icon: 'fa-code', category: 'Skill', action: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }) },
+            { label: 'SCAI Project', icon: 'fa-microphone', category: 'Project', action: () => { window.location.href = 'project-scai.html'; } },
+            { label: 'SalesLens Project', icon: 'fa-chart-line', category: 'Project', action: () => { window.location.href = 'project-saleslens.html'; } },
+            { label: 'Toggle Incognito Mode', icon: 'fa-mask', category: 'Action', action: () => { if (commands.incognito) commands.incognito(); } },
+            { label: 'View Source Code', icon: 'fa-code', category: 'Action', action: () => { if (typeof showSource === 'function') showSource(); } },
+        ];
+
+        let selectedIndex = 0;
+        let filteredItems = [...paletteItems];
+
+        function fuzzyMatch(query, text) {
+            const q = query.toLowerCase();
+            const t = text.toLowerCase();
+            let qi = 0;
+            for (let ti = 0; ti < t.length && qi < q.length; ti++) {
+                if (t[ti] === q[qi]) qi++;
+            }
+            return qi === q.length;
+        }
+
+        function renderResults() {
+            cmdResults.innerHTML = '';
+            filteredItems.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'cmd-palette-item' + (i === selectedIndex ? ' selected' : '');
+                div.innerHTML = `<div class="cmd-icon"><i class="fas ${item.icon}"></i></div>
+                    <span class="cmd-label">${item.label}</span>
+                    <span class="cmd-badge">${item.category}</span>`;
+                div.addEventListener('click', () => executeItem(item));
+                div.addEventListener('mouseenter', () => {
+                    selectedIndex = i;
+                    cmdResults.querySelectorAll('.cmd-palette-item').forEach((el, j) => {
+                        el.classList.toggle('selected', j === i);
+                    });
+                });
+                cmdResults.appendChild(div);
+            });
+        }
+
+        function executeItem(item) {
+            closePalette();
+            item.action();
+        }
+
+        function openPalette() {
+            cmdPalette.classList.add('visible');
+            cmdInput.value = '';
+            selectedIndex = 0;
+            filteredItems = [...paletteItems];
+            renderResults();
+            setTimeout(() => cmdInput.focus(), 50);
+        }
+
+        function closePalette() {
+            cmdPalette.classList.remove('visible');
+            cmdInput.blur();
+        }
+
+        cmdInput.addEventListener('input', () => {
+            const q = cmdInput.value.trim();
+            filteredItems = q ? paletteItems.filter(item => fuzzyMatch(q, item.label + ' ' + item.category)) : [...paletteItems];
+            selectedIndex = 0;
+            renderResults();
+        });
+
+        cmdInput.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % filteredItems.length;
+                renderResults();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex - 1 + filteredItems.length) % filteredItems.length;
+                renderResults();
+            } else if (e.key === 'Enter' && filteredItems[selectedIndex]) {
+                e.preventDefault();
+                executeItem(filteredItems[selectedIndex]);
+            } else if (e.key === 'Escape') {
+                closePalette();
+            }
+        });
+
+        cmdPalette.addEventListener('click', (e) => {
+            if (e.target === cmdPalette) closePalette();
+        });
+
+        // Global Ctrl+K / Cmd+K handler
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                if (cmdPalette.classList.contains('visible')) closePalette();
+                else openPalette();
+            }
+        });
+    }
+
+    /* ==========================================================================
+       27. Animated SVG Skill Radar Chart
+       ========================================================================== */
+    const radarSvg = document.getElementById('skill-radar');
+    if (radarSvg) {
+        const cx = 200, cy = 200, maxR = 140;
+        const skills = [
+            { label: 'Backend', value: 0.95, techs: 'Flask, Spring Boot, Node.js, REST APIs' },
+            { label: 'Cloud', value: 0.8, techs: 'AWS EC2/S3, Docker, Nginx, Jenkins' },
+            { label: 'Databases', value: 0.85, techs: 'MySQL, MongoDB, Amazon RDS' },
+            { label: 'AI/ML', value: 0.75, techs: 'STT, TTS, LLM, Conversational AI' },
+            { label: 'Testing', value: 0.8, techs: 'Playwright, Flutter, API Testing' },
+            { label: 'Frontend', value: 0.6, techs: 'React.js, HTML/CSS, TailwindCSS' }
+        ];
+        const n = skills.length;
+
+        function polarToXY(angle, radius) {
+            return {
+                x: cx + radius * Math.cos(angle - Math.PI / 2),
+                y: cy + radius * Math.sin(angle - Math.PI / 2)
+            };
+        }
+
+        // Draw grid rings
+        const rings = radarSvg.querySelectorAll('.radar-ring');
+        rings.forEach(ring => {
+            const level = parseFloat(ring.dataset.level);
+            const pts = [];
+            for (let i = 0; i < n; i++) {
+                const angle = (2 * Math.PI / n) * i;
+                const p = polarToXY(angle, maxR * level);
+                pts.push(`${p.x},${p.y}`);
+            }
+            ring.setAttribute('points', pts.join(' '));
+        });
+
+        // Draw axis lines
+        const axesGroup = radarSvg.querySelector('.radar-axes');
+        for (let i = 0; i < n; i++) {
+            const angle = (2 * Math.PI / n) * i;
+            const p = polarToXY(angle, maxR);
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+            line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
+            axesGroup.appendChild(line);
+        }
+
+        // Draw data polygon
+        const dataPolygon = document.getElementById('radar-data');
+        const pointsGroup = document.getElementById('radar-points');
+        const labelsGroup = document.getElementById('radar-labels');
+        const radarTooltip = document.getElementById('radar-tooltip');
+        const dataPts = [];
+
+        skills.forEach((skill, i) => {
+            const angle = (2 * Math.PI / n) * i;
+            const p = polarToXY(angle, maxR * skill.value);
+            dataPts.push(`${p.x},${p.y}`);
+
+            // Data point circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', p.x);
+            circle.setAttribute('cy', p.y);
+            circle.setAttribute('data-skill', skill.label);
+            circle.setAttribute('data-techs', skill.techs);
+            circle.setAttribute('data-value', Math.round(skill.value * 100));
+
+            circle.addEventListener('mouseenter', () => {
+                radarTooltip.innerHTML = `<strong style="color:var(--accent-blue)">${skill.label}</strong> — ${Math.round(skill.value * 100)}%<br><span style="color:var(--text-muted)">${skill.techs}</span>`;
+                radarTooltip.classList.add('visible');
+                const rect = radarSvg.closest('.radar-chart-container').getBoundingClientRect();
+                const svgRect = radarSvg.getBoundingClientRect();
+                const scaleX = svgRect.width / 400;
+                radarTooltip.style.left = (p.x * scaleX - radarTooltip.offsetWidth / 2 + (svgRect.left - rect.left)) + 'px';
+                radarTooltip.style.top = (p.y * scaleX - 50 + (svgRect.top - rect.top)) + 'px';
+            });
+            circle.addEventListener('mouseleave', () => {
+                radarTooltip.classList.remove('visible');
+            });
+
+            pointsGroup.appendChild(circle);
+
+            // Labels
+            const labelP = polarToXY(angle, maxR + 22);
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', labelP.x);
+            text.setAttribute('y', labelP.y + 4);
+            text.textContent = skill.label;
+            labelsGroup.appendChild(text);
+        });
+
+        dataPolygon.setAttribute('points', dataPts.join(' '));
+
+        // Animate on scroll
+        const radarContainer = radarSvg.closest('.radar-chart-container');
+        const radarObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    dataPolygon.classList.add('animated');
+                    pointsGroup.querySelectorAll('circle').forEach((c, i) => {
+                        setTimeout(() => c.classList.add('animated'), 300 + i * 100);
+                    });
+                    radarObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        if (radarContainer) radarObserver.observe(radarContainer);
+    }
+
+    /* ==========================================================================
+       28. View Source Code Overlay
+       ========================================================================== */
+    const sourceSnippets = {
+        home: { title: 'particles.js — Canvas Particle System', code: `// Particle system with mouse interactivity
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    // Bounce off edges
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    p.x += p.vx;
+    p.y += p.vy;
+
+    // Mouse repulsion (150px radius)
+    if (mouse.x !== undefined) {
+      const dx = p.x - mouse.x;
+      const dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        p.x += (dx / dist) * 2;
+        p.y += (dy / dist) * 2;
+      }
+    }
+
+    // Draw connections between nearby particles
+    particles.forEach(p2 => {
+      const d = Math.hypot(p.x - p2.x, p.y - p2.y);
+      if (d < 150) {
+        ctx.strokeStyle = \`rgba(0,240,255,\${0.08 * (1 - d/150)})\`;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(animateParticles);
+}` },
+        about: { title: 'scramble.js — Text Scramble Effect', code: `// Scramble text characters on reveal
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\\\/[]{}#@$%^&*()+=01';
+    this.update = this.update.bind(this);
+  }
+
+  setText(newText) {
+    const length = Math.max(this.el.innerText.length, newText.length);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = this.el.innerText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40);
+      this.queue.push({ from, to, start, end });
+    }
+    this.frame = 0;
+    this.update();
+  }
+}` },
+        skills: { title: 'radar.js — SVG Skill Radar Chart', code: `// Generate radar chart with polar coordinates
+const skills = [
+  { label: 'Backend',   value: 0.95 },
+  { label: 'Cloud',     value: 0.80 },
+  { label: 'Databases', value: 0.85 },
+  { label: 'AI/ML',     value: 0.75 },
+  { label: 'Testing',   value: 0.80 },
+  { label: 'Frontend',  value: 0.60 }
+];
+
+function polarToXY(angle, radius) {
+  return {
+    x: cx + radius * Math.cos(angle - Math.PI / 2),
+    y: cy + radius * Math.sin(angle - Math.PI / 2)
+  };
+}
+
+// Animate stroke-dashoffset for draw-in
+radarObserver = new IntersectionObserver(entries => {
+  if (entry.isIntersecting) {
+    dataPolygon.classList.add('animated');
+    points.forEach((c, i) => {
+      setTimeout(() => c.classList.add('animated'), 300 + i * 100);
+    });
+  }
+}, { threshold: 0.3 });` },
+        projects: { title: 'terminal.js — Interactive Command System', code: `// Terminal command registry with autocomplete
+const commands = {
+  help: () => renderTable(commandList),
+  about: () => { scrollToSection('about'); return info; },
+  skills: () => { scrollToSection('skills'); return techStack; },
+  neofetch: () => renderAsciiSystemInfo(),
+  'sudo hire kavya': () => {
+    terminal.classList.add('terminal-flash');
+    registerEgg('terminal');
+    return '===== ACCESS GRANTED =====';
+  },
+  matrix: () => {
+    triggerMatrixRain();
+    registerEgg('matrix');
+  }
+};
+
+// Tab autocomplete
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const matches = Object.keys(commands)
+      .filter(c => c.startsWith(input.value));
+    if (matches.length === 1) input.value = matches[0];
+  }
+});` },
+        contact: { title: 'geo.js — Geolocation & Haversine Distance', code: `// Haversine formula for great-circle distance
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(lat1 * Math.PI / 180) *
+            Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// IP-based city lookup for personalized greeting
+fetch('https://ipapi.co/json/')
+  .then(r => r.json())
+  .then(data => {
+    geoData = { city: data.city, lat: data.latitude, lon: data.longitude };
+    tourSteps[0].text = \`Welcome from \${data.city}!\`;
+  });` }
+    };
+
+    function highlightSyntax(code) {
+        return code
+            .replace(/\/\/.*/g, m => `<span class="cmt">${m}</span>`)
+            .replace(/\b(const|let|var|function|return|if|else|for|class|new|this|typeof|import|export|from|of|in)\b/g, '<span class="kw">$1</span>')
+            .replace(/(\d+\.?\d*)/g, '<span class="num">$1</span>')
+            .replace(/(["'`])(?:(?!\1).)*?\1/g, m => `<span class="str">${m}</span>`)
+            .replace(/\b([a-zA-Z_]\w*)\s*\(/g, '<span class="fn">$1</span>(');
+    }
+
+    let sourceOverlay = null;
+
+    function showSource() {
+        // Find current section
+        let currentId = 'home';
+        document.querySelectorAll('.section[id]').forEach(sec => {
+            if (window.scrollY >= sec.offsetTop - 400) currentId = sec.id;
+        });
+
+        const snippet = sourceSnippets[currentId] || sourceSnippets.home;
+
+        if (!sourceOverlay) {
+            sourceOverlay = document.createElement('div');
+            sourceOverlay.className = 'source-overlay';
+            sourceOverlay.innerHTML = `<div class="source-panel">
+                <div class="source-panel-header">
+                    <h3 id="source-title"></h3>
+                    <button class="source-panel-close">&times;</button>
+                </div>
+                <div class="source-code" id="source-code-content"></div>
+            </div>`;
+            document.body.appendChild(sourceOverlay);
+
+            sourceOverlay.querySelector('.source-panel-close').addEventListener('click', () => {
+                sourceOverlay.classList.remove('visible');
+            });
+            sourceOverlay.addEventListener('click', (e) => {
+                if (e.target === sourceOverlay) sourceOverlay.classList.remove('visible');
+            });
+        }
+
+        sourceOverlay.querySelector('#source-title').textContent = snippet.title;
+        sourceOverlay.querySelector('#source-code-content').innerHTML = highlightSyntax(snippet.code);
+        sourceOverlay.classList.add('visible');
+    }
+
+    // Terminal command
+    commands.source = () => {
+        setTimeout(showSource, 100);
+        return '<div class="term-success">Opening source view for current section...</div>';
+    };
+
+    // Also accessible via Ctrl+Shift+S
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+            e.preventDefault();
+            showSource();
+        }
+    });
+
+    /* ==========================================================================
+       29. Live Code Playground in Terminal
+       ========================================================================== */
+
+    // --- run: sandboxed JS eval ---
+    commands.run = (args) => {
+        if (!args || args.length === 0) return '<div class="term-error">Usage: run &lt;javascript code&gt;</div>';
+        const code = args.join(' ');
+
+        // Block dangerous patterns
+        const blocked = ['document', 'window', 'fetch', 'XMLHttpRequest', 'eval', 'Function', 'import', 'require', 'localStorage', 'sessionStorage', 'cookie'];
+        for (const b of blocked) {
+            if (code.includes(b)) return `<div class="term-error">SecurityError: access to '${b}' is restricted in sandbox</div>`;
+        }
+
+        const logs = [];
+        const fakeConsole = { log: (...a) => logs.push(a.map(String).join(' ')), error: (...a) => logs.push('Error: ' + a.map(String).join(' ')) };
+
+        try {
+            const fn = new Function('console', '"use strict";\n' + code);
+            const result = fn(fakeConsole);
+            let output = '';
+            if (logs.length) output += logs.map(l => `<div class="term-output">${l}</div>`).join('');
+            if (result !== undefined) output += `<div class="term-output" style="color:var(--accent-blue)">${String(result)}</div>`;
+            return output || '<div class="term-output" style="color:var(--text-muted)">undefined</div>';
+        } catch (e) {
+            return `<div class="term-error">${e.name}: ${e.message}</div>`;
+        }
+    };
+
+    // --- sql: mock database query ---
+    const mockDB = {
+        skills: [
+            { category: 'Languages', items: 'Python, Java, JavaScript, SQL', proficiency: '90%' },
+            { category: 'Backend', items: 'Flask, Spring Boot, Node.js', proficiency: '95%' },
+            { category: 'Databases', items: 'MySQL, MongoDB, Amazon RDS', proficiency: '85%' },
+            { category: 'Cloud', items: 'AWS EC2/S3, Docker, Nginx', proficiency: '80%' },
+            { category: 'Testing', items: 'Playwright, Flutter, API Testing', proficiency: '80%' },
+            { category: 'Frontend', items: 'React.js, HTML/CSS, TailwindCSS', proficiency: '60%' }
+        ],
+        experience: [
+            { role: 'SDET', company: 'Salescode.ai', location: 'Gurugram', start: '2025-04', status: 'Active' }
+        ],
+        projects: [
+            { name: 'SCAI', type: 'AI Voice Agent', tech: 'Python, Flask, AWS', latency: '<2s' },
+            { name: 'SalesLens', type: 'Analytics Dashboard', tech: 'Python, MySQL, React', data_points: '500+' }
+        ],
+        certifications: [
+            { name: 'AWS Cloud Practitioner', year: 2025, provider: 'Amazon' },
+            { name: 'Python Advanced', year: 2024, provider: 'HackerRank' },
+            { name: 'Docker Essentials', year: 2024, provider: 'Docker' },
+            { name: 'AI & Machine Learning', year: 2024, provider: 'Coursera' }
+        ]
+    };
+
+    function formatTable(rows) {
+        if (!rows.length) return '<div class="term-output">(empty set)</div>';
+        const keys = Object.keys(rows[0]);
+        const widths = keys.map(k => Math.max(k.length, ...rows.map(r => String(r[k]).length)));
+        const sep = '+' + widths.map(w => '-'.repeat(w + 2)).join('+') + '+';
+        const header = '|' + keys.map((k, i) => ` ${k.padEnd(widths[i])} `).join('|') + '|';
+        const body = rows.map(r => '|' + keys.map((k, i) => ` ${String(r[k]).padEnd(widths[i])} `).join('|') + '|').join('\n');
+        return `<pre class="term-output" style="font-size:0.75rem;line-height:1.5">${sep}\n${header}\n${sep}\n${body}\n${sep}</pre>
+<div class="term-output" style="color:var(--text-muted)">${rows.length} row(s) in set</div>`;
+    }
+
+    commands.sql = (args) => {
+        if (!args || args.length === 0) return '<div class="term-error">Usage: sql SELECT * FROM &lt;table&gt;</div>';
+        const query = args.join(' ').trim();
+        const match = query.match(/^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+?))?(?:\s+ORDER\s+BY\s+(\w+))?(?:\s+LIMIT\s+(\d+))?$/i);
+        if (!match) return `<div class="term-error">Syntax error. Tables: ${Object.keys(mockDB).join(', ')}</div>`;
+
+        const [, columns, table, where, orderBy, limit] = match;
+        const data = mockDB[table.toLowerCase()];
+        if (!data) return `<div class="term-error">Table '${table}' not found. Available: ${Object.keys(mockDB).join(', ')}</div>`;
+
+        let results = [...data];
+
+        // WHERE clause
+        if (where) {
+            const wMatch = where.match(/(\w+)\s*=\s*['"]?(.+?)['"]?$/i);
+            if (wMatch) {
+                results = results.filter(r => String(r[wMatch[1]]).toLowerCase() === wMatch[2].toLowerCase());
+            }
+        }
+
+        // ORDER BY
+        if (orderBy && results.length && results[0][orderBy] !== undefined) {
+            results.sort((a, b) => String(a[orderBy]).localeCompare(String(b[orderBy])));
+        }
+
+        // LIMIT
+        if (limit) results = results.slice(0, parseInt(limit));
+
+        // Column selection
+        if (columns.trim() !== '*') {
+            const cols = columns.split(',').map(c => c.trim());
+            results = results.map(r => {
+                const obj = {};
+                cols.forEach(c => { if (r[c] !== undefined) obj[c] = r[c]; });
+                return obj;
+            });
+        }
+
+        return `<div class="term-heading" style="margin-bottom:0.3rem">${query}</div>` + formatTable(results);
+    };
+
+    // --- python: simple Python-to-JS approximation ---
+    commands.python = (args) => {
+        if (!args || args.length === 0) return '<div class="term-error">Usage: python &lt;python code&gt;</div>';
+        const code = args.join(' ');
+
+        try {
+            // Simple Python-to-JS translations
+            let jsCode = code
+                .replace(/print\((.+?)\)/g, 'console.log($1)')
+                .replace(/len\((.+?)\)/g, '$1.length')
+                .replace(/range\((\d+)\)/g, 'Array.from({length:$1},(_,i)=>i)')
+                .replace(/range\((\d+),\s*(\d+)\)/g, 'Array.from({length:$2-$1},(_,i)=>i+$1)')
+                .replace(/True/g, 'true')
+                .replace(/False/g, 'false')
+                .replace(/None/g, 'null')
+                .replace(/#.*/g, '')
+                .replace(/\*\*/g, '**');
+
+            // Reuse run command logic
+            return commands.run(jsCode.split(' '));
+        } catch (e) {
+            return `<div class="term-error">${e.message}</div>`;
+        }
+    };
+
+    // Update help to include new commands
+    const origHelp2 = commands.help;
+    commands.help = () => {
+        return origHelp2()
+            .replace('</div>', '') +
+`<span class="term-key">profile</span><span class="term-val">View your hacker profile</span>
+<span class="term-key">ping</span><span class="term-val">Ping kavya.dev</span>
+<span class="term-key">source</span><span class="term-val">View source code</span>
+<span class="term-key">run</span><span class="term-val">Run JavaScript code</span>
+<span class="term-key">sql</span><span class="term-val">Query mock database</span>
+<span class="term-key">python</span><span class="term-val">Run Python (approx.)</span>
+<span class="term-key">gravity</span><span class="term-val">Enable gravity (easter egg)</span>
+<span class="term-key">incognito</span><span class="term-val">Toggle privacy mode</span>
+</div>`;
+    };
+
+    /* ==========================================================================
+       30. Scroll-Driven Commit Timeline Animation
+       ========================================================================== */
+    const commitTimeline = document.getElementById('commit-timeline');
+    if (commitTimeline) {
+        const commitNodes = commitTimeline.querySelectorAll('.commit-node');
+
+        const commitObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Stagger animate each commit node
+                    commitNodes.forEach((node, i) => {
+                        setTimeout(() => node.classList.add('visible'), i * 200);
+                    });
+                    commitObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        commitObserver.observe(commitTimeline);
+
+        // Horizontal scroll with mouse wheel
+        commitTimeline.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                commitTimeline.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+    }
+
+    /* ==========================================================================
+       31. Physics "Gravity" Easter Egg
+       ========================================================================== */
+    let gravityActive = false;
+
+    function triggerGravity() {
+        if (gravityActive) return;
+        gravityActive = true;
+
+        const elements = [];
+        const selectors = '.glass-card, .section-title, .btn, .cert-card, .skill-category, .commit-card';
+        document.querySelectorAll(selectors).forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top >= 0 && rect.bottom <= window.innerHeight + 100) {
+                elements.push({
+                    el,
+                    origTransform: el.style.transform,
+                    origTransition: el.style.transition,
+                    origPosition: el.style.position,
+                    x: 0,
+                    y: 0,
+                    vy: 0,
+                    rotation: (Math.random() - 0.5) * 4,
+                    floor: window.innerHeight - rect.bottom + rect.height / 2
+                });
+            }
+        });
+
+        // Disable transitions for physics
+        elements.forEach(e => {
+            e.el.style.transition = 'none';
+        });
+
+        let frame;
+        const gravity = 0.8;
+        const bounce = 0.5;
+        const friction = 0.99;
+
+        function step() {
+            let allSettled = true;
+            elements.forEach(e => {
+                e.vy += gravity;
+                e.y += e.vy;
+                e.rotation += e.vy * 0.05;
+
+                // Floor collision
+                if (e.y >= e.floor) {
+                    e.y = e.floor;
+                    e.vy = -e.vy * bounce;
+                    if (Math.abs(e.vy) < 1) e.vy = 0;
+                }
+
+                e.vy *= friction;
+                if (Math.abs(e.vy) > 0.5 || e.y < e.floor) allSettled = false;
+
+                e.el.style.transform = `translateY(${e.y}px) rotate(${e.rotation}deg)`;
+            });
+
+            if (!allSettled) {
+                frame = requestAnimationFrame(step);
+            } else {
+                // Hold for 2s then restore
+                setTimeout(restoreElements, 2000);
+            }
+        }
+
+        function restoreElements() {
+            cancelAnimationFrame(frame);
+            elements.forEach(e => {
+                e.el.style.transition = 'all 1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                e.el.style.transform = e.origTransform || '';
+            });
+            setTimeout(() => {
+                elements.forEach(e => {
+                    e.el.style.transition = e.origTransition || '';
+                    e.el.style.position = e.origPosition || '';
+                });
+                gravityActive = false;
+            }, 1200);
+        }
+
+        frame = requestAnimationFrame(step);
+        if (window.SoundEngine) SoundEngine.error();
+    }
+
+    commands.gravity = () => {
+        triggerGravity();
+        registerEgg('gravity');
+        return '<div class="term-success">Gravity enabled... hold on!</div>';
+    };
+
+    // Also triggered by typing "gravity" anywhere (hidden)
+    let gravityBuffer = '';
+    document.addEventListener('keydown', (e) => {
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+        gravityBuffer += e.key.toLowerCase();
+        if (gravityBuffer.length > 7) gravityBuffer = gravityBuffer.slice(-7);
+        if (gravityBuffer === 'gravity') {
+            gravityBuffer = '';
+            triggerGravity();
+            registerEgg('gravity');
+        }
+    });
+
+    /* ==========================================================================
+       32. "Hiring Mode" Contact Enhancement
+       ========================================================================== */
+    let hiringMode = sessionStorage.getItem('kavya-hiring-mode') === 'true';
+
+    function activateHiringMode() {
+        if (hiringMode) return;
+        hiringMode = true;
+        sessionStorage.setItem('kavya-hiring-mode', 'true');
+
+        const contactSection = document.getElementById('contact');
+        const form = document.getElementById('contactForm');
+        if (!contactSection || !form) return;
+
+        // Golden glow on contact section
+        contactSection.style.boxShadow = '0 0 60px rgba(255, 215, 0, 0.08)';
+        contactSection.style.borderTop = '1px solid rgba(255, 215, 0, 0.15)';
+
+        // Add hiring fields before existing fields
+        const firstGroup = form.querySelector('.form-group');
+        if (firstGroup && !document.getElementById('company')) {
+            const companyGroup = document.createElement('div');
+            companyGroup.className = 'form-group';
+            companyGroup.innerHTML = `<label for="company">Company Name</label>
+                <input type="text" id="company" class="glass-input" placeholder="Your Company" required>`;
+            form.insertBefore(companyGroup, firstGroup);
+
+            const roleGroup = document.createElement('div');
+            roleGroup.className = 'form-group';
+            roleGroup.innerHTML = `<label for="role-type">Role Type</label>
+                <select id="role-type" class="glass-input" required>
+                    <option value="" disabled selected>Select role type</option>
+                    <option value="fulltime">Full-time</option>
+                    <option value="contract">Contract</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="internship">Internship</option>
+                </select>`;
+            form.insertBefore(roleGroup, firstGroup);
+        }
+
+        // Update submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-handshake"></i> Send Hiring Inquiry';
+            submitBtn.style.background = 'linear-gradient(135deg, #ffd700, #ff8c00)';
+        }
+    }
+
+    // Hook into existing sudo hire kavya command
+    const origSudoHire = commands['sudo hire kavya'];
+    commands['sudo hire kavya'] = () => {
+        activateHiringMode();
+        return origSudoHire();
+    };
+
+    // Restore on load if already activated
+    if (hiringMode) {
+        // Re-run after DOM fully loaded
+        setTimeout(activateHiringMode, 100);
+        hiringMode = false; // Reset so activateHiringMode() runs
+    }
+
+    /* ==========================================================================
+       33. IST Timezone Clock + Availability Status
+       ========================================================================== */
+    const clockContainer = document.createElement('div');
+    clockContainer.className = 'ist-clock';
+    clockContainer.id = 'ist-clock';
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer) {
+        // Insert before the sound toggle
+        const soundBtn = document.getElementById('sound-toggle');
+        if (soundBtn) navContainer.insertBefore(clockContainer, soundBtn);
+        else navContainer.appendChild(clockContainer);
+    }
+
+    function updateISTClock() {
+        const now = new Date();
+        const ist = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+        const hours = ist.getHours();
+        const mins = String(ist.getMinutes()).padStart(2, '0');
+        const secs = String(ist.getSeconds()).padStart(2, '0');
+        const h12 = hours % 12 || 12;
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const day = ist.getDay();
+        const isWorkHours = hours >= 9 && hours < 19 && day >= 1 && day <= 5;
+
+        clockContainer.innerHTML = `
+            <span class="clock-dot ${isWorkHours ? 'online' : 'offline'}"></span>
+            <span class="clock-time">${h12}:${mins}:${secs} ${ampm} IST</span>
+            <span class="clock-status">${isWorkHours ? 'Available' : 'Offline'}</span>
+        `;
+    }
+
+    updateISTClock();
+    setInterval(updateISTClock, 1000);
+
+    /* ==========================================================================
+       34. Animated Favicon
+       ========================================================================== */
+    const faviconCanvas = document.createElement('canvas');
+    faviconCanvas.width = 32;
+    faviconCanvas.height = 32;
+    const favCtx = faviconCanvas.getContext('2d');
+
+    let faviconLink = document.querySelector('link[rel="icon"]');
+    if (!faviconLink) {
+        faviconLink = document.createElement('link');
+        faviconLink.rel = 'icon';
+        document.head.appendChild(faviconLink);
+    }
+
+    function drawFavicon(theme) {
+        const isDark = theme !== 'light';
+        favCtx.clearRect(0, 0, 32, 32);
+
+        // Background
+        favCtx.fillStyle = isDark ? '#07070a' : '#ffffff';
+        favCtx.beginPath();
+        favCtx.roundRect(0, 0, 32, 32, 6);
+        favCtx.fill();
+
+        // Border
+        const grad = favCtx.createLinearGradient(0, 0, 32, 32);
+        grad.addColorStop(0, '#00f0ff');
+        grad.addColorStop(1, '#9d00ff');
+        favCtx.strokeStyle = grad;
+        favCtx.lineWidth = 2;
+        favCtx.beginPath();
+        favCtx.roundRect(1, 1, 30, 30, 5);
+        favCtx.stroke();
+
+        // KM text
+        favCtx.fillStyle = isDark ? '#00f0ff' : '#07070a';
+        favCtx.font = 'bold 14px sans-serif';
+        favCtx.textAlign = 'center';
+        favCtx.textBaseline = 'middle';
+        favCtx.fillText('KM', 16, 17);
+
+        faviconLink.href = faviconCanvas.toDataURL();
+    }
+
+    // Boot animation frames
+    let bootFaviconFrame = 0;
+    let bootFaviconInterval = null;
+
+    function startFaviconBoot() {
+        bootFaviconInterval = setInterval(() => {
+            favCtx.clearRect(0, 0, 32, 32);
+            favCtx.fillStyle = '#07070a';
+            favCtx.fillRect(0, 0, 32, 32);
+
+            // Spinning arc
+            const startAngle = (bootFaviconFrame * 0.3) % (Math.PI * 2);
+            favCtx.strokeStyle = '#00f0ff';
+            favCtx.lineWidth = 3;
+            favCtx.beginPath();
+            favCtx.arc(16, 16, 10, startAngle, startAngle + Math.PI * 1.2);
+            favCtx.stroke();
+
+            faviconLink.href = faviconCanvas.toDataURL();
+            bootFaviconFrame++;
+        }, 100);
+    }
+
+    function stopFaviconBoot() {
+        clearInterval(bootFaviconInterval);
+        const theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        drawFavicon(theme);
+    }
+
+    // Start boot favicon if boot screen is active
+    if (bootScreen && !sessionStorage.getItem('bootDone')) {
+        startFaviconBoot();
+        // Stop when boot ends (listen for content-hidden removal)
+        const bootObserverFav = new MutationObserver(() => {
+            if (!bootScreen.style.display || bootScreen.style.display === 'none' || bootScreen.style.opacity === '0') {
+                stopFaviconBoot();
+                bootObserverFav.disconnect();
+            }
+        });
+        bootObserverFav.observe(bootScreen, { attributes: true, attributeFilter: ['style', 'class'] });
+        // Fallback: stop after 5s
+        setTimeout(stopFaviconBoot, 5000);
+    } else {
+        drawFavicon(document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    }
+
+    // Update favicon on theme change
+    const themeToggleFav = document.getElementById('theme-toggle');
+    if (themeToggleFav) {
+        themeToggleFav.addEventListener('click', () => {
+            setTimeout(() => {
+                drawFavicon(document.body.classList.contains('light-theme') ? 'light' : 'dark');
+            }, 50);
+        });
+    }
+
+    // Tab away detection
+    const originalTitle = document.title;
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            document.title = '👋 Come back! | ' + originalTitle;
+            // Draw a "wave" favicon
+            favCtx.clearRect(0, 0, 32, 32);
+            favCtx.fillStyle = '#07070a';
+            favCtx.fillRect(0, 0, 32, 32);
+            favCtx.font = '22px serif';
+            favCtx.textAlign = 'center';
+            favCtx.textBaseline = 'middle';
+            favCtx.fillText('👋', 16, 16);
+            faviconLink.href = faviconCanvas.toDataURL();
+        } else {
+            document.title = originalTitle;
+            drawFavicon(document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+    });
+
+    /* ==========================================================================
+       35. Incognito Mode
+       ========================================================================== */
+    let incognitoMode = localStorage.getItem('kavya-incognito') === 'true';
+
+    function toggleIncognito() {
+        incognitoMode = !incognitoMode;
+        localStorage.setItem('kavya-incognito', incognitoMode);
+        applyIncognito();
+        return incognitoMode;
+    }
+
+    function applyIncognito() {
+        document.body.classList.toggle('incognito-mode', incognitoMode);
+        if (incognitoMode) {
+            // Disable GA
+            window['ga-disable-G-8ZE56CHCJF'] = true;
+            window.gtag = function() {};
+        } else {
+            window['ga-disable-G-8ZE56CHCJF'] = false;
+            // Can't fully re-enable GA without reload, but flag is cleared
+        }
+    }
+
+    if (incognitoMode) applyIncognito();
+
+    commands.incognito = () => {
+        const state = toggleIncognito();
+        return state
+            ? `<div class="term-success"><i class="fas fa-mask"></i> Incognito mode ON — analytics disabled, tracking hidden</div>`
+            : `<div class="term-output">Incognito mode OFF — normal mode restored</div>`;
+    };
 
 });

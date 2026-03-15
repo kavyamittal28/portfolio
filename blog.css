@@ -167,3 +167,13 @@
         gap: 1rem;
     }
 }
+
+@media (max-width: 480px) {
+    .blog-article { padding: 5rem 0.8rem 2rem; }
+    .blog-article-title { font-size: 1.5rem; }
+    .blog-article-body { font-size: 0.95rem; }
+    .blog-article-body pre { font-size: 0.75rem; padding: 1rem; }
+    .blog-article-body h2 { font-size: 1.3rem; }
+    .blog-meta { flex-direction: column; gap: 0.5rem; }
+    .author-card { flex-direction: column; text-align: center; padding: 1.2rem; }
+}

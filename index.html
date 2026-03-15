@@ -35,6 +35,49 @@
         <span class="transition-text">LOADING MODULE...</span>
     </div>
 
+    <!-- Command Palette -->
+    <div id="command-palette" class="command-palette">
+        <div class="cmd-palette-content glass-card">
+            <div class="cmd-palette-header">
+                <i class="fas fa-terminal"></i>
+                <input type="text" id="cmd-palette-input" placeholder="Type a command or search..." autocomplete="off" spellcheck="false">
+                <kbd>Esc</kbd>
+            </div>
+            <div class="cmd-palette-results" id="cmd-palette-results"></div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Cheat Sheet -->
+    <div id="shortcuts-modal" class="shortcuts-modal">
+        <div class="shortcuts-content glass-card">
+            <div class="shortcuts-header">
+                <h3><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h3>
+                <button id="shortcuts-close" class="shortcuts-close">&times;</button>
+            </div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-group">
+                    <h4>Navigation</h4>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>h</kbd><span>Go to Home</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>a</kbd><span>Go to About</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>e</kbd><span>Go to Experience</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>s</kbd><span>Go to Skills</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>p</kbd><span>Go to Projects</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>b</kbd><span>Go to Blog</span></div>
+                    <div class="shortcut-item"><kbd>g</kbd> <kbd>c</kbd><span>Go to Contact</span></div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>Actions</h4>
+                    <div class="shortcut-item"><kbd>t</kbd><span>Toggle Theme</span></div>
+                    <div class="shortcut-item"><kbd>/</kbd><span>Focus Terminal</span></div>
+                    <div class="shortcut-item"><kbd>Ctrl</kbd><kbd>K</kbd><span>Command Palette</span></div>
+                    <div class="shortcut-item"><kbd>Ctrl</kbd><kbd>⇧</kbd><kbd>S</kbd><span>View Source</span></div>
+                    <div class="shortcut-item"><kbd>Esc</kbd><span>Close Overlay</span></div>
+                    <div class="shortcut-item"><kbd>?</kbd><span>Show This Sheet</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Cursor -->
     <div id="custom-cursor"></div>
 
@@ -57,7 +100,7 @@
     <canvas id="bg-canvas"></canvas>
 
     <!-- Floating Code Snippets -->
-    <div class="code-bg-elements" aria-hidden="true">
+    <div class="code-bg-elements parallax-layer" data-depth="0.3" aria-hidden="true">
         <div class="code-snippet snippet-1">def process_audio(file):</div>
         <div class="code-snippet snippet-2">SELECT * FROM analytics</div>
         <div class="code-snippet snippet-3">app.route('/api/v1/voice')</div>
@@ -80,6 +123,9 @@
                 <li><a href="#blog">Blog</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound">
+                <i class="fas fa-volume-xmark" id="sound-icon"></i>
+            </button>
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
                 <i class="fas fa-moon" id="theme-icon"></i>
             </button>
@@ -90,7 +136,7 @@
         <!-- Hero Section -->
         <section id="home" class="hero section">
             <div class="container hero-content">
-                <div class="hero-text">
+                <div class="hero-text parallax-layer" data-depth="0.6">
                     <p class="greeting">Hello World, I am</p>
                     <h1 class="glitch-text" data-text="Kavya Mittal">
                         <span class="typing-text"></span><span class="cursor">|</span>
@@ -111,7 +157,7 @@
                         <a href="mailto:kavyamittal1282@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
-                <div class="hero-visual">
+                <div class="hero-visual parallax-layer" data-depth="0.8">
                     <div class="terminal-window glass-card interactive-terminal">
                         <div class="terminal-header">
                             <span class="btn-close"></span>
@@ -216,6 +262,84 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Git Commit Timeline -->
+                <div class="commit-timeline reveal" id="commit-timeline">
+                    <div class="commit-track">
+                        <div class="commit-line"></div>
+                        <div class="commit-node" data-date="Apr 2025" data-metric="Day 1">
+                            <div class="commit-dot"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">#a1b2c3f</div>
+                                <div class="commit-msg">feat: join Salescode.ai as SDET</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Onboarded to AI voice product team</span>
+                                    <span class="diff-add">+ Set up Python dev environment</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-node" data-date="May 2025" data-metric="Sub-2s">
+                            <div class="commit-dot"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">#d4e5f6a</div>
+                                <div class="commit-msg">feat: build AI voice pipeline microservices</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Flask-based STT/TTS pipeline</span>
+                                    <span class="diff-add">+ Sub-2s response latency achieved</span>
+                                    <span class="diff-add">+ Hindi & Spanish support (90-95%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-node" data-date="Jul 2025" data-metric="500+ pts">
+                            <div class="commit-dot"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">#b7c8d9e</div>
+                                <div class="commit-msg">feat: deploy SalesLens analytics dashboard</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Real-time dashboards with RBAC</span>
+                                    <span class="diff-add">+ Complex SQL query optimization</span>
+                                    <span class="diff-add">+ 500+ data points validated</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-node" data-date="Sep 2025" data-metric="0% manual">
+                            <div class="commit-dot"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">#f0a1b2c</div>
+                                <div class="commit-msg">feat: automate all regression testing</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Playwright UI automation framework</span>
+                                    <span class="diff-add">+ Flutter mobile test suite</span>
+                                    <span class="diff-del">- 100% manual regression eliminated</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-node" data-date="Dec 2025" data-metric="CI/CD">
+                            <div class="commit-dot"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">#e3d4c5b</div>
+                                <div class="commit-msg">ops: production AWS deployment pipeline</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Docker + Nginx on AWS EC2</span>
+                                    <span class="diff-add">+ Jenkins CI/CD integration</span>
+                                    <span class="diff-add">+ Live issue resolution workflows</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="commit-node" data-date="Mar 2026" data-metric="11 months">
+                            <div class="commit-dot active"></div>
+                            <div class="commit-card glass-card">
+                                <div class="commit-hash">HEAD</div>
+                                <div class="commit-msg">status: 11 months of impact</div>
+                                <div class="commit-diff">
+                                    <span class="diff-add">+ Full-stack AI ownership</span>
+                                    <span class="diff-add">+ Production-grade systems running</span>
+                                    <span class="diff-add">+ Seeking next challenge...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -260,6 +384,35 @@
         <section id="skills" class="section">
             <div class="container">
                 <h2 class="section-title reveal">Skills & <span class="gradient-text">Tech Stack</span></h2>
+                <!-- Skill Radar Chart -->
+                <div class="radar-chart-container reveal">
+                    <svg id="skill-radar" class="skill-radar" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="radar-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00f0ff; stop-opacity:0.3"/>
+                                <stop offset="100%" style="stop-color:#9d00ff; stop-opacity:0.3"/>
+                            </linearGradient>
+                            <filter id="radar-glow">
+                                <feGaussianBlur stdDeviation="3" result="blur"/>
+                                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Grid rings -->
+                        <polygon class="radar-ring" points="" data-level="0.25"/>
+                        <polygon class="radar-ring" points="" data-level="0.5"/>
+                        <polygon class="radar-ring" points="" data-level="0.75"/>
+                        <polygon class="radar-ring" points="" data-level="1"/>
+                        <!-- Axis lines -->
+                        <g class="radar-axes"></g>
+                        <!-- Data polygon -->
+                        <polygon id="radar-data" class="radar-data" points="" fill="url(#radar-gradient)" filter="url(#radar-glow)"/>
+                        <!-- Data points -->
+                        <g id="radar-points" class="radar-points"></g>
+                        <!-- Labels -->
+                        <g id="radar-labels" class="radar-labels"></g>
+                    </svg>
+                    <div id="radar-tooltip" class="radar-tooltip"></div>
+                </div>
                 <div class="skills-grid">
                     <div class="skill-category glass-card reveal">
                         <h3><i class="fas fa-code"></i> Languages</h3>
@@ -596,7 +749,7 @@
             <div class="debug-row"><span class="debug-key">Fonts:</span><span class="debug-val">Space Grotesk, Inter</span></div>
             <div class="debug-row"><span class="debug-key">Theme:</span><span class="debug-val">Glassmorphism + Neon</span></div>
             <div class="debug-row"><span class="debug-key">Pages:</span><span class="debug-val">7 (index, 2 projects, blog, 404)</span></div>
-            <div class="debug-row"><span class="debug-key">Easter Eggs:</span><span class="debug-val" id="eggs-found">0/3</span></div>
+            <div class="debug-row"><span class="debug-key">Easter Eggs:</span><span class="debug-val" id="eggs-found">0/4</span></div>
         </div>
     </div>
 

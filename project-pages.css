@@ -252,3 +252,17 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 480px) {
+    .project-hero-title { font-size: 2rem; }
+    .project-hero-subtitle { font-size: 1rem; }
+    .project-hero { padding: 5rem 0 3rem; min-height: auto; }
+    .project-section { padding: 2rem 0; }
+    .project-section h2 { font-size: 1.4rem; }
+    .project-section p { font-size: 0.9rem; }
+    .project-metrics-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .metric-card { padding: 1rem; }
+    .metric-value { font-size: 1.8rem; }
+    .tech-deep-item { padding: 1rem; }
+    .back-link { font-size: 0.85rem; }
+}
