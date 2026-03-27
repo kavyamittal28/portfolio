@@ -35,8 +35,8 @@
       { "icon": "map-pin", "label": "Location", "value": "Gurugram, India", "color": "neon-blue" }
     ],
     "socialLinks": [
-      { "icon": "github", "href": "https://github.com/kavyamittal", "label": "GitHub" },
-      { "icon": "linkedin", "href": "https://linkedin.com/in/kavyamittal", "label": "LinkedIn" }
+      { "icon": "github", "href": "https://github.com/kavyamittal28", "label": "GitHub" },
+      { "icon": "linkedin", "href": "https://www.linkedin.com/in/kavyamittal-dev/", "label": "LinkedIn" }
     ]
   }
 }

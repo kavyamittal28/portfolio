@@ -31,9 +31,9 @@
       { "date": "Apr 2025", "metric": "Day 1", "hash": "#a1b2c3f", "msg": "feat: join Salescode.ai as SDET", "diffs": ["+Onboarded to AI voice product team", "+Set up Python dev environment"] },
       { "date": "May 2025", "metric": "Sub-2s", "hash": "#d4e5f6a", "msg": "feat: build AI voice pipeline microservices", "diffs": ["+Flask-based STT/TTS pipeline", "+Sub-2s response latency achieved", "+Hindi & Spanish support (90-95%)"] },
       { "date": "Jul 2025", "metric": "500+ pts", "hash": "#b7c8d9e", "msg": "feat: deploy SalesLens analytics dashboard", "diffs": ["+Real-time dashboards with RBAC", "+Complex SQL query optimization", "+500+ data points validated"] },
-      { "date": "Sep 2025", "metric": "0% manual", "hash": "#f0a1b2c", "msg": "feat: automate all regression testing", "diffs": ["+Playwright UI automation framework", "+Flutter mobile test suite", "-100% manual regression eliminated"] },
+      { "date": "Sep 2025", "metric": "0% manual", "hash": "#f0a1b2c", "msg": "feat: automate all regression testing", "diffs": ["+Playwright UI automation framework", "+Flutter mobile test suite", "+100% manual regression eliminated"] },
       { "date": "Dec 2025", "metric": "CI/CD", "hash": "#e3d4c5b", "msg": "ops: production AWS deployment pipeline", "diffs": ["+Docker + Nginx on AWS EC2", "+Jenkins CI/CD integration", "+Live issue resolution workflows"] },
-      { "date": "Mar 2026", "metric": "11 months", "hash": "HEAD", "msg": "status: 11 months of impact", "diffs": ["+Full-stack AI ownership", "+Production-grade systems running", "+Seeking next challenge..."] }
+      { "date": "Mar 2026", "metric": "1 year", "hash": "HEAD", "msg": "status: 1 year of impact", "diffs": ["+Full-stack AI ownership", "+Production-grade systems running", "+Seeking next challenge..."] }
     ]
   }
 ]
