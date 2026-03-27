@@ -1,0 +1,109 @@
+[
+  {
+    "id": "scai",
+    "title": "SCAI – AI Voice Calling Agent",
+    "tagline": "AI-Powered Voice Calling Agent",
+    "tech": ["Python", "Flask", "AWS", "Docker", "AI/ML", "11 Labs"],
+    "problem": [
+      "Businesses needed automated, natural-sounding voice interactions to handle high-volume customer calls across multiple languages. Traditional IVR systems felt robotic and couldn't handle nuanced conversations in Hindi and Mexican Spanish, leading to poor customer satisfaction and high abandonment rates.",
+      "The challenge was to build a real-time conversational AI pipeline that could process speech-to-text, understand intent, generate intelligent responses, and convert them back to natural-sounding speech — all within a 2-second latency window."
+    ],
+    "architecture": [
+      { "label": "Voice Input", "icon": "phone" },
+      { "label": "STT Service", "icon": "mic" },
+      { "label": "Conversational AI", "icon": "brain" },
+      { "label": "TTS Engine", "icon": "volume" },
+      { "label": "Voice Output", "icon": "headset" }
+    ],
+    "contributions": [
+      {
+        "title": "Backend API Development",
+        "bullets": [
+          "Built Flask microservices powering the voice pipeline",
+          "Designed RESTful APIs for call management and analytics",
+          "Achieved sub-2-second end-to-end response latency"
+        ]
+      },
+      {
+        "title": "AI Pipeline Integration",
+        "bullets": [
+          "Owned end-to-end STT, TTS, and conversational AI workflows",
+          "Integrated AWS, Google, and 11 Labs speech services",
+          "Achieved ~90-95% accuracy across Hindi and Mexican Spanish"
+        ]
+      },
+      {
+        "title": "Infrastructure & Deployment",
+        "bullets": [
+          "Deployed on AWS EC2 with Docker containerization",
+          "Configured Nginx for load balancing and SSL termination",
+          "Handled live production issue resolution"
+        ]
+      }
+    ],
+    "metrics": [
+      { "value": "<2", "label": "Second Latency" },
+      { "value": "95%", "label": "Accuracy" },
+      { "value": "2", "label": "Languages Supported" }
+    ],
+    "techDeepDive": [
+      { "name": "Python & Flask", "desc": "Core microservice framework for all API endpoints and business logic" },
+      { "name": "AWS (EC2, S3)", "desc": "Cloud infrastructure for compute, storage, and speech services" },
+      { "name": "Docker", "desc": "Containerized deployments for consistent environments across dev and prod" },
+      { "name": "AI/ML Services", "desc": "STT, TTS, and conversational AI via AWS, Google, and 11 Labs APIs" }
+    ]
+  },
+  {
+    "id": "saleslens",
+    "title": "SalesLens",
+    "tagline": "Real-Time Analytics Dashboard",
+    "tech": ["Python", "REST APIs", "MySQL", "AWS", "React", "RBAC"],
+    "problem": [
+      "Sales teams needed real-time visibility into call analytics, agent performance, and pipeline metrics. Existing solutions were slow, lacked granular access control, and couldn't handle the complex SQL queries needed for multi-dimensional analytics across large datasets.",
+      "The challenge was building a backend that could serve real-time dashboards with sub-second query performance, while enforcing role-based access control (RBAC) so different team levels only saw their authorized data."
+    ],
+    "architecture": [
+      { "label": "React Dashboard", "icon": "monitor" },
+      { "label": "REST API", "icon": "server" },
+      { "label": "RBAC Layer", "icon": "shield" },
+      { "label": "MySQL", "icon": "database" }
+    ],
+    "contributions": [
+      {
+        "title": "SQL & Data Engineering",
+        "bullets": [
+          "Optimized complex SQL queries for multi-dimensional analytics",
+          "Reduced query execution time for real-time dashboard performance",
+          "Designed database schema for scalable analytics storage"
+        ]
+      },
+      {
+        "title": "Security & Access Control",
+        "bullets": [
+          "Implemented role-based access control (RBAC) at API level",
+          "Built secure authentication and authorization middleware",
+          "Ensured data isolation between different organizational levels"
+        ]
+      },
+      {
+        "title": "Backend API Development",
+        "bullets": [
+          "Built RESTful API endpoints serving the React dashboard",
+          "Designed pagination, filtering, and aggregation APIs",
+          "Deployed on AWS with Docker and Nginx"
+        ]
+      }
+    ],
+    "metrics": [
+      { "value": "500+", "label": "Data Points Validated" },
+      { "value": "100%", "label": "RBAC Coverage" },
+      { "value": "3", "label": "Access Roles" }
+    ],
+    "techDeepDive": [
+      { "name": "Python", "desc": "Backend services and data processing pipelines" },
+      { "name": "MySQL", "desc": "Optimized queries for complex analytics aggregations" },
+      { "name": "React", "desc": "Frontend dashboard with interactive charts and real-time data" },
+      { "name": "AWS", "desc": "EC2 for compute, S3 for storage, RDS for managed database" }
+    ]
+  }
+]

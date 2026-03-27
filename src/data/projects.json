@@ -1,0 +1,20 @@
+[
+  {
+    "id": "scai",
+    "title": "SCAI – AI Voice Calling Agent",
+    "description": "Implemented backend APIs, managed AI-driven voice workflows, and maintained real-time conversational pipelines supporting Hindi and Mexican Spanish with ~90-95% accuracy.",
+    "tech": ["Python", "Flask", "AWS", "Docker", "AI/ML", "11 Labs"],
+    "link": "/project/scai",
+    "waveformColor": "blue",
+    "visual": "waveform"
+  },
+  {
+    "id": "saleslens",
+    "title": "SalesLens – Analytics Dashboard",
+    "description": "Built backend services, optimized complex SQL queries, and developed secure real-time analytics dashboards with detailed role-based access control (RBAC).",
+    "tech": ["Python", "REST APIs", "MySQL", "AWS", "React"],
+    "link": "/project/saleslens",
+    "waveformColor": "purple",
+    "visual": "chart"
+  }
+]
