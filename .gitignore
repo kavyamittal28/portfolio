@@ -28,3 +28,7 @@ yarn-error.log*
 
 # Markdown files
 *.md
+
+# Local working files
+Portfolio Redesign v2.html
+.vite/

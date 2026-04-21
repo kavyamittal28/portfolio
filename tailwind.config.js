@@ -5,20 +5,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        'bg-dark': '#07070a',
-        'bg-surface': 'rgba(20, 20, 30, 0.4)',
-        'accent-blue': '#00f0ff',
-        'accent-purple': '#9d00ff',
+        'bg-dark': '#050507',
+        'bg-surface': 'rgba(18, 18, 28, 0.5)',
+        'accent-blue': '#00d4ff',
+        'accent-purple': '#a855f7',
         'text-main': '#f0f0f5',
-        'text-muted': '#a0a0b0',
+        'text-muted': '#9a9ab0',
       },
       fontFamily: {
         heading: ['Space Grotesk', 'sans-serif'],
-        body: ['Inter', 'sans-serif'],
-        mono: ['Fira Code', 'monospace'],
+        body: ['Outfit', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       backdropBlur: {
-        glass: '20px',
+        glass: '24px',
       },
     },
   },

@@ -1,9 +1,13 @@
 export default function Footer() {
+  const marqueeText =
+    'Open to backend · platform · AI engineering roles · Python · Flask · AWS · Docker · MySQL · Playwright · Jenkins · '
   return (
-    <footer className="glass-footer">
-      <div className="container text-center">
-        <p>&copy; {new Date().getFullYear()} Kavya Mittal. Designed &amp; Built with passion.</p>
+    <div className="foot">
+      <span>© 2026 · KM</span>
+      <div className="marquee">
+        <span>{marqueeText.repeat(2)}</span>
       </div>
-    </footer>
-  );
+      <span>Set in Inter Tight &amp; JetBrains Mono</span>
+    </div>
+  )
 }

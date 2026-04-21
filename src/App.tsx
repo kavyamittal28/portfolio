@@ -1,70 +1,61 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AppProvider } from '@/context/AppContext'
-import BootScreen from '@/components/BootScreen'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
-import ScrollPipeline from '@/components/layout/ScrollPipeline'
-import HeroSection from '@/components/sections/HeroSection'
-import AboutSection from '@/components/sections/AboutSection'
-import ExperienceSection from '@/components/sections/ExperienceSection'
-import CertificationsSection from '@/components/sections/CertificationsSection'
-import SkillsSection from '@/components/sections/SkillsSection'
-import ArchitectureSection from '@/components/sections/ArchitectureSection'
-import ProjectsSection from '@/components/sections/ProjectsSection'
-import BlogSection from '@/components/sections/BlogSection'
-import ContactSection from '@/components/sections/ContactSection'
-import AIAssistant from '@/components/interactive/ai/AIAssistant'
-import CmdPalette from '@/components/interactive/palette/CmdPalette'
-import BlogPost from '@/components/sections/BlogPost'
-import ProjectDetail from '@/components/sections/ProjectDetail'
-import { useApp } from '@/context/AppContext'
 import { useCallback } from 'react'
+import { ToastProvider, useToast } from '@/context/ToastContext'
+import { useTheme } from '@/hooks/useTheme'
+import { useReveal } from '@/hooks/useReveal'
 
-function HomePage() {
-  const { toggleTheme, toggleSound } = useApp()
+import Rail from '@/components/layout/Rail'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import StickyCTA from '@/components/layout/StickyCTA'
 
-  const handleStartTour = useCallback(() => {
-    const orb = document.querySelector('.ai-orb') as HTMLElement | null
-    orb?.click()
-  }, [])
+import Hero from '@/components/sections/Hero'
+import About from '@/components/sections/About'
+import Experience from '@/components/sections/Experience'
+import Projects from '@/components/sections/Projects'
+import Skills from '@/components/sections/Skills'
+import Education from '@/components/sections/Education'
+import Testimonial from '@/components/sections/Testimonial'
+import Contact from '@/components/sections/Contact'
+
+function Portfolio() {
+  const { theme, toggle } = useTheme('light')
+  const { show } = useToast()
+  useReveal()
+
+  const onDownloadResume = useCallback(() => {
+    show('Resume · KAVYA_MITTAL.pdf (placeholder)')
+  }, [show])
 
   return (
     <>
-      <BootScreen />
-      <Navbar />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <ExperienceSection />
-        <CertificationsSection />
-        <SkillsSection />
-        <ArchitectureSection />
-        <ProjectsSection />
-        <BlogSection />
-        <ContactSection />
-      </main>
-      <Footer />
-      <ScrollPipeline />
-      <AIAssistant />
-      <CmdPalette
-        onToggleTheme={toggleTheme}
-        onToggleSound={toggleSound}
-        onStartTour={handleStartTour}
-      />
+      <div className="page">
+        <Rail onDownloadResume={onDownloadResume} />
+        <main className="main" id="top">
+          <Header
+            theme={theme}
+            onToggleTheme={toggle}
+            onDownloadResume={onDownloadResume}
+          />
+          <Hero onDownloadResume={onDownloadResume} />
+          <About />
+          <Experience />
+          <Projects />
+          <Skills />
+          <Education />
+          <Testimonial />
+          <Contact onDownloadResume={onDownloadResume} />
+          <Footer />
+        </main>
+      </div>
+      <StickyCTA onDownloadResume={onDownloadResume} />
     </>
   )
 }
 
 export default function App() {
   return (
-    <AppProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/project/:id" element={<ProjectDetail />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-        </Routes>
-      </BrowserRouter>
-    </AppProvider>
+    <ToastProvider>
+      <Portfolio />
+    </ToastProvider>
   )
 }
