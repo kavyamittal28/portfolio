@@ -93,8 +93,8 @@ export default function Contact({ onDownloadResume }: { onDownloadResume: () => 
             <Channel
               label="GitHub"
               value={
-                <a href="https://github.com/kavya-mittal" target="_blank" rel="noopener">
-                  /kavya-mittal ↗
+                <a href="https://github.com/kavyamittal28" target="_blank" rel="noopener">
+                  /kavyamittal28 ↗
                 </a>
               }
             />

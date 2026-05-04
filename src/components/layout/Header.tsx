@@ -23,7 +23,7 @@ export default function Header({ theme, onToggleTheme, onDownloadResume }: Props
         </a>
         <a
           className="pill"
-          href="https://github.com/kavya-mittal"
+          href="https://github.com/kavyamittal28"
           target="_blank"
           rel="noopener"
           aria-label="GitHub"
