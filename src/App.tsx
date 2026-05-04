@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
-import { ToastProvider, useToast } from '@/context/ToastContext'
+import { ToastProvider } from '@/context/ToastContext'
 import { useTheme } from '@/hooks/useTheme'
 import { useReveal } from '@/hooks/useReveal'
+import resumePdf from '@/assets/pdf/KAVYA_MITTAL.pdf?url'
 
 import Rail from '@/components/layout/Rail'
 import Header from '@/components/layout/Header'
@@ -19,12 +20,17 @@ import Contact from '@/components/sections/Contact'
 
 function Portfolio() {
   const { theme, toggle } = useTheme('light')
-  const { show } = useToast()
   useReveal()
 
   const onDownloadResume = useCallback(() => {
-    show('Resume · KAVYA_MITTAL.pdf (placeholder)')
-  }, [show])
+    const a = document.createElement('a')
+    a.href = resumePdf
+    a.download = 'Kavya_Mittal_Resume.pdf'
+    a.rel = 'noopener'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+  }, [])
 
   return (
     <>
