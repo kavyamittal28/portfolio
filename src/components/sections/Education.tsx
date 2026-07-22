@@ -13,7 +13,7 @@ export default function Education() {
               <h5>B.E. · Computer Science &amp; Engineering</h5>
               <p>
                 Chitkara University, Punjab &nbsp;·&nbsp;{' '}
-                <b style={{ color: 'var(--ink)', fontWeight: 500 }}>CGPA 9.06</b> (through 7th sem)
+                <b style={{ color: 'var(--ink)', fontWeight: 500 }}>CGPA 9.13</b>
               </p>
             </div>
             <span className="date">Aug 2022 — Present</span>
