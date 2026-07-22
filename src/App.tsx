@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { ToastProvider } from '@/context/ToastContext'
 import { useTheme } from '@/hooks/useTheme'
 import { useReveal } from '@/hooks/useReveal'
+import { useSectionAnalytics, trackResumeDownload } from '@/hooks/useAnalytics'
 import resumePdf from '@/assets/pdf/KAVYA_MITTAL.pdf?url'
 
 import Rail from '@/components/layout/Rail'
@@ -21,8 +22,10 @@ import Contact from '@/components/sections/Contact'
 function Portfolio() {
   const { theme, toggle } = useTheme('light')
   useReveal()
+  useSectionAnalytics()
 
   const onDownloadResume = useCallback(() => {
+    trackResumeDownload()
     const a = document.createElement('a')
     a.href = resumePdf
     a.download = 'Kavya_Mittal_Resume.pdf'
