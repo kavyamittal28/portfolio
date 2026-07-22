@@ -52,7 +52,7 @@ export default function Hero({ onDownloadResume }: { onDownloadResume: () => voi
             <div className="snap">
               <div className="snap__label">Experience</div>
               <div className="snap__val">
-                1 yr 1 mo <small>Full-time · SDET</small>
+                1 yr 4 mos <small>Full-time · SDET</small>
               </div>
             </div>
             <div className="snap">
@@ -79,3 +79,4 @@ export default function Hero({ onDownloadResume }: { onDownloadResume: () => voi
     </section>
   )
 }
+
